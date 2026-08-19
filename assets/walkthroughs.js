@@ -4,10 +4,11 @@
  * Adding one is a data change, not a code change: copy the shape below and list
  * the trigger phrases people actually type.
  *
- * `art` points at an illustration in assets/steps/, drawn in the brand palette
- * rather than captured from the portal. Illustrations do not leak another
- * customer's data, do not age out the moment the UI shifts a pixel, and can
- * point at the one control that matters instead of showing everything at once.
+ * `art` points at an image in assets/steps/. Steps 1 to 4 are real captures of
+ * the portal with the target control ringed, taken from an internal account
+ * with the account email and wallet balance hidden first. Step 5 is still a
+ * drawing: the outbound dialog renders in a portal that the capture tool cannot
+ * reach, and a drawing is honest where a blank screenshot would not be.
  */
 window.WALKTHROUGHS = [
   {
@@ -28,27 +29,27 @@ window.WALKTHROUGHS = [
       {
         title: "Open Assistants",
         body: "In your sub-account, click Assistants in the left sidebar. It sits under BUILD.",
-        art: "assets/steps/outbound-1.svg",
+        art: "assets/steps/outbound-1.jpg",
         artAlt: "The left sidebar with Assistants selected.",
       },
       {
         title: "Open the assistant you want to call with",
         body: "Click its row in the list. The assistant opens on its Builder tab.",
-        art: "assets/steps/outbound-2.svg",
+        art: "assets/steps/outbound-2.jpg",
         artAlt: "The assistant list, with one row highlighted.",
       },
       {
         title: "Check it has a number",
         body:
           "Look at the bar above the tabs. If it says No number, outbound calling stays unavailable until you assign one. Assign a number first, then come back.",
-        art: "assets/steps/outbound-3.svg",
+        art: "assets/steps/outbound-3.jpg",
         artAlt: "The assistant header showing the number selector.",
       },
       {
         title: "Click the outbound call icon",
         body:
           "Top right, next to Publish, there is a phone icon with a small arrow leaving it. That is outbound. The plain icons beside it are for other actions.",
-        art: "assets/steps/outbound-4.svg",
+        art: "assets/steps/outbound-4.jpg",
         artAlt: "The icon row above Publish, with the outbound phone icon first.",
       },
       {
