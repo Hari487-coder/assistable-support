@@ -1,21 +1,18 @@
 # Assistable support page
 
-The landing view is one decision: which of two helpers you need. They do different
-jobs, so they are told apart by artwork, colour family and a plain-language facts list,
-not just a label.
+The landing view is one decision, two doors, one line each:
 
-**Answer bot** (cool gradient) — explains the product. A walkthrough you click through,
-one screen at a time. Cannot see your account. Instant. Beta: one walkthrough (outbound
-calls).
+**Show me how** — step-by-step guides. Beta: one guide (outbound calls).
 
-**Debug bot** (warm gradient) — investigates your account. Opens the chat; a support
-engineer reads your real assistant, call or conversation and replies in the same chat.
+**Something is broken** — opens the chat; a support engineer reads your account.
 
-Each door states what you give, what you get, what it cannot do, and how fast it answers,
-because "which one do I want" is the question people actually get wrong.
+The subtitles say only the thing that actually separates them: whether anyone looks at
+your account. Colour and artwork carry the rest, cool and stepped for guides, warm and
+diagnostic for support. An earlier version listed four facts per door and read as a wall
+of text to someone who is already stuck.
 
-Picking the debug door opens the chat and **stays on the landing view**, so closing the
-chat leaves you where you started rather than somewhere unfamiliar.
+Picking the support door opens the chat and **stays on the landing view**, so closing the
+chat leaves you where you started.
 
 ## Run it
 

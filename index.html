@@ -32,10 +32,8 @@
         <!-- DOORS: the one decision, made obvious -->
         <div class="view" id="viewDoors">
           <h1>What do you need?</h1>
-          <p class="sub">Two different helpers. Pick the one that matches your problem.</p>
 
           <div class="doors">
-            <!-- Answer bot -->
             <button class="door door-answer" id="doorAnswer" type="button">
               <span class="door-art" aria-hidden="true">
                 <svg viewBox="0 0 56 56" width="52" height="52">
@@ -44,36 +42,18 @@
                       <stop offset="0" stop-color="#7A3FE4" /><stop offset="1" stop-color="#57C9D6" />
                     </linearGradient>
                   </defs>
-                  <rect x="4" y="6" width="48" height="38" rx="7" fill="url(#da)" opacity="0.14" />
-                  <rect x="11" y="14" width="17" height="4" rx="2" fill="url(#da)" />
-                  <rect x="11" y="23" width="30" height="3" rx="1.5" fill="url(#da)" opacity="0.45" />
-                  <rect x="11" y="31" width="24" height="3" rx="1.5" fill="url(#da)" opacity="0.45" />
-                  <circle cx="17" cy="50" r="4" fill="url(#da)" />
-                  <path d="M21 50h6" stroke="url(#da)" stroke-width="2.5" stroke-linecap="round" />
-                  <circle cx="31" cy="50" r="4" fill="url(#da)" opacity="0.5" />
-                  <path d="M35 50h6" stroke="url(#da)" stroke-width="2.5" stroke-linecap="round" opacity="0.5" />
-                  <circle cx="45" cy="50" r="4" fill="url(#da)" opacity="0.25" />
+                  <path d="M12 40h10a6 6 0 0 0 6-6V22a6 6 0 0 1 6-6h10"
+                        fill="none" stroke="url(#da)" stroke-width="3.4"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="10" cy="40" r="6.5" fill="url(#da)" />
+                  <circle cx="46" cy="16" r="6.5" fill="url(#da)" />
+                  <circle cx="28" cy="28" r="4.5" fill="url(#da)" opacity="0.55" />
                 </svg>
               </span>
-
-              <span class="door-kicker">Answer bot</span>
-              <span class="door-title">Show me how to do something</span>
-              <span class="door-body">
-                Step by step, with a picture of each screen. Best when you know what you
-                want and need to find it.
-              </span>
-
-              <ul class="door-facts">
-                <li><b>You give</b> a question, like how to make an outbound call</li>
-                <li><b>You get</b> a walkthrough you click through yourself</li>
-                <li><b>It cannot</b> see your account or change anything</li>
-                <li><b>Answers</b> instantly</li>
-              </ul>
-
-              <span class="door-go">Show me how <span aria-hidden="true">&rarr;</span></span>
+              <span class="door-title">Show me how</span>
+              <span class="door-body">Step-by-step guides</span>
             </button>
 
-            <!-- Debug bot -->
             <button class="door door-debug" id="doorDebug" type="button">
               <span class="door-art" aria-hidden="true">
                 <svg viewBox="0 0 56 56" width="52" height="52">
@@ -82,37 +62,16 @@
                       <stop offset="0" stop-color="#F0257A" /><stop offset="1" stop-color="#FBA94C" />
                     </linearGradient>
                   </defs>
-                  <rect x="4" y="8" width="48" height="34" rx="7" fill="url(#dd)" opacity="0.14" />
-                  <path d="M8 25h9l4-9 6 18 5-13 4 4h12" fill="none" stroke="url(#dd)"
-                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                  <circle cx="40" cy="44" r="10" fill="#fff" />
-                  <circle cx="40" cy="44" r="8.5" fill="none" stroke="url(#dd)" stroke-width="2.5" />
-                  <path d="M46 50l5 5" stroke="url(#dd)" stroke-width="3" stroke-linecap="round" />
+                  <path d="M4 28h8l5-11 7 22 6-16 4 5h6" fill="none" stroke="url(#dd)"
+                        stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="44" cy="30" r="9" fill="none" stroke="url(#dd)" stroke-width="3.4" />
+                  <path d="M50 37l4 4" stroke="url(#dd)" stroke-width="3.4" stroke-linecap="round" />
                 </svg>
               </span>
-
-              <span class="door-kicker">Debug bot</span>
-              <span class="door-title">Something is broken in my account</span>
-              <span class="door-body">
-                Opens a chat. A support engineer reads your real assistant, call or
-                conversation to find the cause.
-              </span>
-
-              <ul class="door-facts">
-                <li><b>You give</b> what went wrong, and an id if you have one</li>
-                <li><b>You get</b> the cause and the fix, back in the chat</li>
-                <li><b>It can</b> read your live account, never change it unasked</li>
-                <li><b>Answers</b> after an engineer has looked</li>
-              </ul>
-
-              <span class="door-go">Open the chat <span aria-hidden="true">&rarr;</span></span>
+              <span class="door-title">Something is broken</span>
+              <span class="door-body">We look inside your account</span>
             </button>
           </div>
-
-          <p class="compare">
-            Short version: the <b>answer bot</b> explains the product, the
-            <b>debug bot</b> investigates your account.
-          </p>
         </div>
 
         <!-- ASK (answer bot) -->
@@ -129,7 +88,6 @@
           </div>
 
           <h2 class="ask-h">What do you want to do?</h2>
-          <p class="sub">It walks you through the screens. It cannot see your account.</p>
 
           <div class="prompt">
             <input id="ask" type="text" autocomplete="off" placeholder="I want to&hellip;"
@@ -145,10 +103,8 @@
           <div class="chips" id="chips"></div>
 
           <p class="miss" id="miss" hidden>
-            No walkthrough for that yet. Outbound calls is the only one so far.
-            <button class="linkish" type="button" id="missToBot">
-              If it is broken rather than unclear, open the debug bot
-            </button>
+            No guide for that yet.
+            <button class="linkish" type="button" id="missToBot">Ask support</button>
           </p>
         </div>
 
@@ -188,7 +144,7 @@
     </main>
 
     <footer class="foot">
-      <p>Walkthroughs are read-only. Support never changes your account without a person looking first.</p>
+      <p>Support never changes your account without a person looking first.</p>
     </footer>
 
     <script src="assets/walkthroughs.js"></script>
