@@ -1,29 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="The outbound call dialog with a number entered and the call button.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 480" role="img"
+     aria-label="The Outbound Call dialog: a search box for a phone number or contact, with a Search button.">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#2E8FE0" /><stop offset="1" stop-color="#57C9D6" />
+    <linearGradient id="v" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6D3BEE" /><stop offset="1" stop-color="#A855F7" />
     </linearGradient>
-    <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#1B1230" flood-opacity="0.10" />
+    <filter id="card" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1B1230" flood-opacity="0.13" />
     </filter>
   </defs>
-  <rect width="640" height="360" fill="#FBF9FC" />
-  <g filter="url(#s)"><rect x="36" y="28" width="568" height="304" rx="14" fill="#fff" /></g>
 
-  <rect x="36" y="28" width="568" height="304" rx="14" fill="#fff" opacity="0.55" />
-  <g filter="url(#s)"><rect x="176" y="76" width="288" height="208" rx="14" fill="#fff" /></g>
-  <rect x="200" y="104" width="120" height="11" rx="5.5" fill="#E7E1EE" />
+  <rect width="1120" height="480" fill="#FBF9FC" />
 
-  <rect x="200" y="136" width="240" height="40" rx="10" fill="#FBF9FC" stroke="url(#g)" stroke-width="1.5" />
-  <rect x="216" y="152" width="122" height="9" rx="4.5" fill="#1B1230" opacity="0.72" />
+  <!-- the dialog, drawn to match the real one -->
+  <g filter="url(#card)">
+    <rect x="230" y="46" width="660" height="392" rx="14" fill="#fff" />
+  </g>
 
-  <rect x="200" y="192" width="240" height="8" rx="4" fill="#EFEAF4" />
+  <!-- header -->
+  <rect x="230" y="46" width="660" height="96" rx="14" fill="#FCFBFE" />
+  <rect x="230" y="128" width="660" height="14" fill="#FCFBFE" />
+  <path d="M268 78c0-3.3 2.7-6 6-6h4.4a3.2 3.2 0 0 1 3.2 2.8l1 6a3.2 3.2 0 0 1-1.6 3.4l-3 1.8a26 26 0 0 0 10 10l1.8-3a3.2 3.2 0 0 1 3.4-1.6l6 1a3.2 3.2 0 0 1 2.8 3.2V100c0 3.3-2.8 6-6 6a32 32 0 0 1-28-28Z"
+        fill="url(#v)" transform="scale(0.62) translate(160,52)" />
+  <text x="286" y="94" font-family="Inter, Segoe UI, sans-serif" font-size="21" font-weight="700" fill="#1B1230">Outbound Call</text>
+  <text x="268" y="122" font-family="Inter, Segoe UI, sans-serif" font-size="14" fill="#6B6480">Type a phone number to dial directly, or search for a contact.</text>
+  <line x1="230" y1="142" x2="890" y2="142" stroke="#EFEAF4" stroke-width="1.5" />
 
-  <rect x="200" y="224" width="112" height="36" rx="10" fill="#F7F4FA" />
-  <rect x="222" y="238" width="68" height="8" rx="4" fill="#DDD6E6" />
-  <rect x="328" y="224" width="112" height="36" rx="10" fill="url(#g)" />
-  <rect x="352" y="238" width="64" height="8" rx="4" fill="#fff" opacity="0.9" />
+  <!-- the search field: the control this step is about -->
+  <rect x="266" y="172" width="588" height="60" rx="10" fill="#fff" stroke="url(#v)" stroke-width="2.5" />
+  <circle cx="300" cy="202" r="9" fill="none" stroke="#8E86A3" stroke-width="2.4" />
+  <path d="M307 209l6 6" stroke="#8E86A3" stroke-width="2.6" stroke-linecap="round" />
+  <text x="326" y="209" font-family="Inter, Segoe UI, sans-serif" font-size="16" fill="#1B1230">+1 415 555 0142</text>
+  <rect x="722" y="180" width="124" height="44" rx="8" fill="url(#v)" />
+  <text x="784" y="208" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="600"
+        fill="#fff" text-anchor="middle">Search</text>
 
-  <circle cx="470" cy="242" r="15" fill="url(#g)" opacity="0.16" />
-  <circle cx="470" cy="242" r="7" fill="url(#g)" />
+  <!-- empty state below, as the real dialog shows before you search -->
+  <circle cx="560" cy="316" r="30" fill="#F4F1FA" />
+  <circle cx="556" cy="312" r="10" fill="none" stroke="#A79FBB" stroke-width="2.6" />
+  <path d="M564 320l7 7" stroke="#A79FBB" stroke-width="3" stroke-linecap="round" />
+  <text x="560" y="378" font-family="Inter, Segoe UI, sans-serif" font-size="14" fill="#9A93AC" text-anchor="middle">Type a phone number to call directly, or search by</text>
+  <text x="560" y="398" font-family="Inter, Segoe UI, sans-serif" font-size="14" fill="#9A93AC" text-anchor="middle">name / email.</text>
+
+  <!-- callout on the field -->
+  <circle cx="248" cy="202" r="14" fill="url(#v)" opacity="0.16" />
+  <circle cx="248" cy="202" r="6.5" fill="url(#v)" />
 </svg>

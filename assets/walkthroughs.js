@@ -55,9 +55,9 @@ window.WALKTHROUGHS = [
       {
         title: "Enter the number and call",
         body:
-          "Type the number in full international format, then start the call. It appears in your call history as soon as it connects.",
+          "Type the number in full international format, or search for a contact by name or email, then press Search. The call appears in your call history as soon as it connects.",
         art: "assets/steps/outbound-5.svg",
-        artAlt: "The outbound call dialog with a number entered.",
+        artAlt: "The Outbound Call dialog: a search box for a number or contact, with a Search button.",
       },
     ],
   },
