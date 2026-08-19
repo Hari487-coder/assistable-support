@@ -19,13 +19,18 @@
   --faint: #efeaf4;
   --line: #e7e1ee;
 
-  --magenta: #f0257a;
-  --amber: #fba94c;
-  --violet: #7a3fe4;
+  /* Violet carries support and every primary action. Guides sit on blue-cyan,
+     so the two doors stay tellable apart without a warm colour. */
+  --violet: #6d3bee;
+  --violet-lift: #a855f7;
+  --azure: #2e8fe0;
   --cyan: #57c9d6;
 
-  --brand: linear-gradient(135deg, var(--magenta), var(--amber));
-  --brand-cool: linear-gradient(135deg, var(--violet), var(--cyan));
+  /* Kept as the accent name the rest of the sheet already uses. */
+  --magenta: #6d3bee;
+
+  --brand: linear-gradient(135deg, var(--violet), var(--violet-lift));
+  --brand-cool: linear-gradient(135deg, var(--azure), var(--cyan));
 
   --display: Outfit, "Segoe UI", system-ui, sans-serif;
   --font: Manrope, "Segoe UI", system-ui, sans-serif;
@@ -364,7 +369,7 @@ main {
   border-radius: 999px;
   padding: 0.3rem 0.7rem;
   color: var(--violet);
-  background: rgba(122, 63, 228, 0.09);
+  background: rgba(109, 59, 238, 0.10);
 }
 
 .ask-h {
@@ -483,7 +488,7 @@ main {
 }
 
 .rail li.is-current .rail-node {
-  box-shadow: 0 0 0 4px rgba(240, 37, 122, 0.14);
+  box-shadow: 0 0 0 4px rgba(109, 59, 238, 0.16);
 }
 
 /* stage */
@@ -576,7 +581,7 @@ main {
 }
 
 .primary:hover {
-  filter: saturate(1.1);
+  filter: brightness(1.06);
 }
 
 .ghost {
