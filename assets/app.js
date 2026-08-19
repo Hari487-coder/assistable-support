@@ -147,9 +147,25 @@
 
   /* ---------- the walkthrough ---------- */
 
+  /**
+   * Pull every step image down when the guide opens.
+   *
+   * Each step used to fetch its own JPEG on the click that revealed it, so the
+   * picture arrived after the words and the step visibly re-laid out. The
+   * images are small and there are five of them: fetching them all up front
+   * costs one moment at the start and makes every later step instant.
+   */
+  function preload(wt) {
+    wt.steps.forEach(function (step) {
+      var img = new Image();
+      img.src = step.art;
+    });
+  }
+
   function start(wt) {
     current = wt;
     index = 0;
+    preload(wt);
     miss.hidden = true;
     show(viewPlay);
     el("wtTitle").textContent = wt.title;
@@ -188,8 +204,18 @@
     el("counter").textContent = index + 1 + " / " + current.steps.length;
     el("stepTitle").textContent = step.title;
     el("stepBody").textContent = step.body;
-    art.src = step.art;
+    // Hold the previous frame until the next one has actually decoded, so the
+    // step never flashes empty between images.
     art.alt = step.artAlt || step.title;
+    var next = new Image();
+    next.src = step.art;
+    // Named swapIn, not show: there is already a show() for switching views and
+    // shadowing it here would be a trap for the next person.
+    var swapIn = function () {
+      if (art.getAttribute("src") !== step.art) art.src = step.art;
+    };
+    if (next.decode) next.decode().then(swapIn, swapIn);
+    else swapIn();
 
     var items = rail.children;
     for (var i = 0; i < items.length; i++) {

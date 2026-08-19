@@ -527,18 +527,25 @@ main {
   }
 }
 
+/*
+  Fixed frame. The step images are not all the same shape, so sizing the box to
+  the image made the whole card jump on every step. The box holds its shape and
+  the picture fits inside it.
+*/
 .art {
   margin: 0;
   border: 1px solid var(--line);
   border-radius: 14px;
   overflow: hidden;
   background: #fbf9fc;
+  aspect-ratio: 16 / 10;
 }
 
 .art img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 .say h3 {

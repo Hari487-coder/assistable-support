@@ -41,6 +41,44 @@ The portal itself runs Inter. That is the correct choice inside a dense product 
 the wrong one here, where the page has a handful of words and they have to do all the
 work.
 
+
+## The v2 widget, as configured
+
+Type `CHAT_WIDGET_V2`, id `cmt041ugd000hhz0axeybqqh2`, from the support help desk template.
+
+Settings split across two places and it matters which:
+
+**Embed attributes** (`index.html`) — things the record cannot carry. Chiefly the pre-chat
+form. On v2 the loader resolves it as `t.pre_chat?.form_first ?? e.requirePreChatForm`, so
+a `false` on the record beats the attribute; `form_first` has to be true on the record and
+the attribute is only a fallback.
+
+**Widget record** — appearance, messaging, home actions, tabs, help articles, and the rest
+of the `fields` blob. The served config at
+`api.assistable.ai/api/v1/widget-config/<id>` is the source of truth, and it lags the
+record by several minutes.
+
+Enabled deliberately:
+
+| Setting | Value | Why |
+|---|---|---|
+| pre-chat form | name + email | identity before anything is read |
+| home actions | 3 | guides, broken, billing |
+| tabs | home, messages, help | news and roadmap stay hidden; empty tabs read as neglect |
+| help articles | 2 | the tab rendered empty otherwise |
+| ai_disclaimer | set | says plainly it is an AI and a person reads the account |
+| header_subline | "Replies in a few minutes" | |
+| show_online_indicator | true | the page claims support is open |
+| persist_history | true | a returning customer keeps their thread |
+| launcher_size | lg | |
+| voice_enabled | false | text intake, no reason to ask for a mic |
+| show_tool_activity | false | raw tool chatter leaked JSON into the chat before |
+| bug-report | off | its report posts to Assistable's own channel, not our queue |
+
+Two traps: `notification_sound` is the sound name (`PING`), not a boolean, and one bad
+field rejects the whole update silently. The disclaimer and header subline only render
+after the pre-chat form is completed, so they look missing until then.
+
 ## Run it
 
 ```bash

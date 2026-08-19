@@ -191,6 +191,20 @@
     <script src="assets/walkthroughs.js"></script>
     <script src="assets/app.js"></script>
 
+    <!--
+      The Assistable v2 chat widget (CHAT_WIDGET_V2), created from the support
+      help desk template. Appearance, home actions, tabs and help articles live
+      on the widget record in the portal.
+
+      These attributes are the ones the record cannot carry:
+
+      pre-chat form  identity, collected before the chat opens. On v2 this is
+                     driven from the embed, so without it {{contact.email}} is
+                     empty and the assistant asks for an address it already has.
+      bug-report     off deliberately. The built-in report posts to Assistable's
+                     own channel, so it never reaches the intake assistant and
+                     never becomes a ticket anyone works.
+    -->
     <script
       src="https://createassistants.com/chat-widget-v2.js"
       data-widget-id="cmt041ugd000hhz0axeybqqh2"
@@ -198,8 +212,19 @@
       data-account-id="1753298396627x629167684234041700"
       data-assistant-name="Assistable Support"
       data-position="bottom-right"
+      data-theme="light"
       data-auto-open="false"
+      data-require-pre-chat-form="true"
+      data-pre-chat-fields="name,email"
+      data-pre-chat-heading="Before we open your account"
+      data-pre-chat-subheading="We need the email on your Assistable account so we know it is you."
       data-show-prompt="true"
+      data-prompt-message="Something not working? Tell us what happened."
+      data-teaser-greeting="Stuck on something?"
+      data-handoff-mode="support"
+      data-enable-memory="true"
+      data-notification-sound="true"
+      data-bug-report="false"
     ></script>
   </body>
 </html>
