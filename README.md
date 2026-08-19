@@ -78,6 +78,13 @@ diagrams rather than as fake screenshots.
 
 Brand assets live in `assets/brand/`. The mark is cropped from the supplied cover.
 
+Placeholder names: the assistant names in step 2 were replaced with "Front desk assistant"
+and "Sales assistant". The real ones were internal test names on our own account and had
+no business on a customer-facing page. Only the labels changed; the screen is real.
+
+The raw captures in `assets/steps/raw/` are gitignored - they are wider than the cropped
+versions and show more of the account than a public page should.
+
 ## Opening the chat
 
 The "Something is broken in my account" chip opens the chat by clicking the widget's
