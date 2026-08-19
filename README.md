@@ -32,16 +32,31 @@ Matching is deliberate keyword scoring, not a model. With one walkthrough live, 
 confident wrong answer is worse than an honest "not covered yet", and this costs nothing
 to run.
 
-## Screenshots
+## Step art
 
-**The step images do not exist yet**, so every step renders a labelled "Screenshot
-coming" block with a caption describing what the picture will show. Drop a PNG at the
-`shot` path and it appears with no code change.
+The steps use drawn SVG illustrations (`assets/steps/*.svg`), not screenshots.
 
-They are missing on purpose. The obvious captures from the live portal included a real
-customer's prompt, the account balance and a support user's email address, none of which
-belongs on a customer-facing page. Capture them from a clean demo sub-account, cropped to
-the control being described.
+That is a deliberate choice. Captures from the live portal contained another customer's
+prompt, the account balance and a support user's email address. Illustrations leak
+nothing, survive a UI reshuffle, and can point at the single control that matters instead
+of showing a whole busy screen. They are drawn in the brand palette so they read as
+diagrams rather than as fake screenshots.
+
+Brand assets live in `assets/brand/`. The mark is cropped from the supplied cover.
+
+## Opening the chat
+
+The "Something is broken in my account" chip opens the chat by clicking the widget's
+launcher inside its shadow root, targeted as `button[aria-label="Open chat"]`.
+
+Two traps here:
+
+- A bare `button` selector hits the teaser toast's close button when a teaser is showing,
+  which silently dismisses the toast and leaves the chat shut.
+- The widget also exposes `window.__assistableWidget.reportBug()`, which opens a polished
+  "Report a problem" form with a screenshot attached. Do not use it for this: it posts to
+  Assistable's built-in bug channel, so it never reaches the intake assistant and never
+  becomes a ticket an engineer picks up.
 
 ## The embedded bot
 
