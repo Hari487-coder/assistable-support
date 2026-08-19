@@ -2,10 +2,12 @@
 
 The landing view is one decision, two doors, one line each:
 
-**Show me how** — see it done, screen by screen. Beta: one guide (outbound calls).
+**Show me how** — follow along, one screen at a time. Beta: one guide (outbound calls).
 
-**Something is broken** — send it over; a support engineer goes into the account and
-fixes it.
+**Fix it for me** — opens the chat; a support engineer goes into the account and sorts it.
+
+Both titles are in the customer's voice, and the second promises the outcome rather than
+describing the mechanism.
 
 The subtitles say only the thing that actually separates them: whether anyone goes into
 your account. An earlier version listed four facts per door and read as a wall of text to
@@ -18,6 +20,11 @@ caption.
 
 Picking the support door opens the chat and **stays on the landing view**, so closing the
 chat leaves you where you started.
+
+## Type
+
+Inter, matching the portal's own stack (`Inter, Geist, Helvetica, Arial`) at weight
+500-600, so support looks like the product rather than a separate site.
 
 ## Run it
 
