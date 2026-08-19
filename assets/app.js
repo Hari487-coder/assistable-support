@@ -16,6 +16,7 @@
     return document.getElementById(id);
   };
 
+  var viewDoors = el("viewDoors");
   var viewAsk = el("viewAsk");
   var viewPlay = el("viewPlay");
   var ask = el("ask");
@@ -62,9 +63,27 @@
     return false;
   }
 
-  el("chipBroken").addEventListener("click", openSupportBot);
+  /* ---------- the three views ---------- */
+
+  function show(view) {
+    viewDoors.hidden = view !== viewDoors;
+    viewAsk.hidden = view !== viewAsk;
+    viewPlay.hidden = view !== viewPlay;
+  }
+
+  el("doorAnswer").addEventListener("click", function () {
+    show(viewAsk);
+    ask.focus();
+  });
+
+  // The debug door opens the chat and stays on the landing view, so closing the
+  // chat leaves the person where they started rather than somewhere new.
+  el("doorDebug").addEventListener("click", openSupportBot);
   el("missToBot").addEventListener("click", openSupportBot);
   el("stuck").addEventListener("click", openSupportBot);
+  el("askBack").addEventListener("click", function () {
+    show(viewDoors);
+  });
 
   /* ---------- matching ---------- */
 
@@ -113,9 +132,8 @@
     miss.hidden = true;
   });
 
-  // One chip per walkthrough, before the "something is broken" chip.
+  // One chip per walkthrough.
   var chips = el("chips");
-  var brokenChip = el("chipBroken");
   walkthroughs.forEach(function (wt) {
     var b = document.createElement("button");
     b.type = "button";
@@ -124,7 +142,7 @@
     b.addEventListener("click", function () {
       start(wt);
     });
-    chips.insertBefore(b, brokenChip);
+    chips.appendChild(b);
   });
 
   /* ---------- the walkthrough ---------- */
@@ -133,16 +151,14 @@
     current = wt;
     index = 0;
     miss.hidden = true;
-    viewAsk.hidden = true;
-    viewPlay.hidden = false;
+    show(viewPlay);
     el("wtTitle").textContent = wt.title;
     buildRail(wt.steps.length);
     render();
   }
 
   function exit() {
-    viewPlay.hidden = true;
-    viewAsk.hidden = false;
+    show(viewAsk);
     ask.focus();
   }
 

@@ -1,11 +1,21 @@
 # Assistable support page
 
-One page, two ways to get unstuck:
+The landing view is one decision: which of two helpers you need. They do different
+jobs, so they are told apart by artwork, colour family and a plain-language facts list,
+not just a label.
 
-- **Show me how** — a visual walkthrough that advances one step at a time. Beta: one
-  walkthrough (outbound calls) so far.
-- **Something is broken** — the v2 intake assistant, embedded as a chat launcher. It
-  raises a ticket and a support engineer opens the customer's live account.
+**Answer bot** (cool gradient) — explains the product. A walkthrough you click through,
+one screen at a time. Cannot see your account. Instant. Beta: one walkthrough (outbound
+calls).
+
+**Debug bot** (warm gradient) — investigates your account. Opens the chat; a support
+engineer reads your real assistant, call or conversation and replies in the same chat.
+
+Each door states what you give, what you get, what it cannot do, and how fast it answers,
+because "which one do I want" is the question people actually get wrong.
+
+Picking the debug door opens the chat and **stays on the landing view**, so closing the
+chat leaves you where you started rather than somewhere unfamiliar.
 
 ## Run it
 

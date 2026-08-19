@@ -275,6 +275,152 @@ main {
   text-underline-offset: 3px;
 }
 
+
+/* ---------- doors: the one decision on the landing view ---------- */
+
+/*
+  The two helpers do genuinely different jobs, so they are told apart by more
+  than a label: different gradient family (cool for explaining, warm for
+  investigating), different artwork, and a facts list that states plainly what
+  each one needs and what it cannot do.
+*/
+.doors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18.5rem, 1fr));
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+.door {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 1.5rem 1.4rem 1.35rem;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.door::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+}
+
+.door-answer::before { background: var(--brand-cool); }
+.door-debug::before { background: var(--brand); }
+
+.door:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -26px rgba(27, 18, 48, 0.5);
+}
+
+.door-answer:hover { border-color: var(--violet); }
+.door-debug:hover { border-color: var(--magenta); }
+
+.door-art {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.door-kicker {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+}
+
+.door-answer .door-kicker { color: var(--violet); }
+.door-debug .door-kicker { color: var(--magenta); }
+
+.door-title {
+  font-size: 1.22rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.door-body {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+}
+
+.door-facts {
+  list-style: none;
+  margin: 0.5rem 0 0.9rem;
+  padding: 0.9rem 0 0;
+  border-top: 1px solid var(--faint);
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.door-facts b {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.door-go {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.door-answer .door-go { color: var(--violet); }
+.door-debug .door-go { color: var(--magenta); }
+
+.compare {
+  margin: 1.5rem 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.compare b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* view header shared by the inner views */
+
+.view-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.pill {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+}
+
+.pill-answer {
+  color: var(--violet);
+  background: rgba(122, 63, 228, 0.09);
+}
+
+.ask-h {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.4rem;
+  text-align: center;
+}
+
 /* ---------- walkthrough ---------- */
 
 .play-top {
