@@ -2,14 +2,19 @@
 
 The landing view is one decision, two doors, one line each:
 
-**Show me how** — step-by-step guides. Beta: one guide (outbound calls).
+**Show me how** — see it done, screen by screen. Beta: one guide (outbound calls).
 
-**Something is broken** — opens the chat; a support engineer reads your account.
+**Something is broken** — send it over; a support engineer goes into the account and
+fixes it.
 
-The subtitles say only the thing that actually separates them: whether anyone looks at
-your account. Colour and artwork carry the rest, cool and stepped for guides, warm and
-diagnostic for support. An earlier version listed four facts per door and read as a wall
-of text to someone who is already stuck.
+The subtitles say only the thing that actually separates them: whether anyone goes into
+your account. An earlier version listed four facts per door and read as a wall of text to
+someone who is already stuck.
+
+The two icons are deliberately the same object with a different instrument on it - the
+same screen, pointed at for guides, put under a magnifier for support. That reads as one
+system rather than two unrelated pictures, and it says what each door does without a
+caption.
 
 Picking the support door opens the chat and **stays on the landing view**, so closing the
 chat leaves you where you started.

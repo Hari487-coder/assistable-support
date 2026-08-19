@@ -36,40 +36,79 @@
           <div class="doors">
             <button class="door door-answer" id="doorAnswer" type="button">
               <span class="door-art" aria-hidden="true">
-                <svg viewBox="0 0 56 56" width="52" height="52">
+                <svg viewBox="0 0 72 72" width="68" height="68">
                   <defs>
-                    <linearGradient id="da" x1="0" y1="0" x2="1" y2="1">
+                    <linearGradient id="cool" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0" stop-color="#7A3FE4" /><stop offset="1" stop-color="#57C9D6" />
                     </linearGradient>
+                    <filter id="lift" x="-30%" y="-30%" width="160%" height="160%">
+                      <feDropShadow dx="0" dy="3" stdDeviation="3.5"
+                                    flood-color="#1B1230" flood-opacity="0.16" />
+                    </filter>
                   </defs>
-                  <path d="M12 40h10a6 6 0 0 0 6-6V22a6 6 0 0 1 6-6h10"
-                        fill="none" stroke="url(#da)" stroke-width="3.4"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                  <circle cx="10" cy="40" r="6.5" fill="url(#da)" />
-                  <circle cx="46" cy="16" r="6.5" fill="url(#da)" />
-                  <circle cx="28" cy="28" r="4.5" fill="url(#da)" opacity="0.55" />
+
+                  <circle cx="36" cy="34" r="27" fill="url(#cool)" opacity="0.12" />
+
+                  <!-- the screen you are being shown -->
+                  <g filter="url(#lift)">
+                    <rect x="13" y="15" width="46" height="34" rx="7" fill="#fff" />
+                  </g>
+                  <rect x="13" y="15" width="15" height="34" rx="7" fill="url(#cool)" opacity="0.18" />
+                  <rect x="13" y="15" width="46" height="34" rx="7" fill="none"
+                        stroke="url(#cool)" stroke-width="1.6" opacity="0.5" />
+
+                  <!-- the one row being pointed at -->
+                  <rect x="17" y="29" width="7" height="4" rx="2" fill="url(#cool)" />
+                  <rect x="33" y="22" width="21" height="4" rx="2" fill="url(#cool)" opacity="0.28" />
+                  <rect x="33" y="30" width="17" height="4.5" rx="2.25" fill="url(#cool)" />
+                  <rect x="33" y="39" width="21" height="4" rx="2" fill="url(#cool)" opacity="0.28" />
+
+                  <!-- pointer -->
+                  <path d="M47 34l11 5-4.6 1.6L51 45.4z" fill="#fff" stroke="url(#cool)"
+                        stroke-width="2" stroke-linejoin="round" />
+
+                  <!-- steps -->
+                  <circle cx="27" cy="59" r="3.6" fill="url(#cool)" />
+                  <circle cx="36" cy="59" r="3.6" fill="url(#cool)" opacity="0.5" />
+                  <circle cx="45" cy="59" r="3.6" fill="url(#cool)" opacity="0.25" />
                 </svg>
               </span>
               <span class="door-title">Show me how</span>
-              <span class="door-body">Step-by-step guides</span>
+              <span class="door-body">See it done, screen by screen</span>
             </button>
 
             <button class="door door-debug" id="doorDebug" type="button">
               <span class="door-art" aria-hidden="true">
-                <svg viewBox="0 0 56 56" width="52" height="52">
+                <svg viewBox="0 0 72 72" width="68" height="68">
                   <defs>
-                    <linearGradient id="dd" x1="0" y1="0" x2="1" y2="1">
+                    <linearGradient id="warm" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0" stop-color="#F0257A" /><stop offset="1" stop-color="#FBA94C" />
                     </linearGradient>
                   </defs>
-                  <path d="M4 28h8l5-11 7 22 6-16 4 5h6" fill="none" stroke="url(#dd)"
-                        stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
-                  <circle cx="44" cy="30" r="9" fill="none" stroke="url(#dd)" stroke-width="3.4" />
-                  <path d="M50 37l4 4" stroke="url(#dd)" stroke-width="3.4" stroke-linecap="round" />
+
+                  <circle cx="36" cy="34" r="27" fill="url(#warm)" opacity="0.12" />
+
+                  <!-- your account, same card as the other door -->
+                  <g filter="url(#lift)">
+                    <rect x="13" y="15" width="46" height="34" rx="7" fill="#fff" />
+                  </g>
+                  <rect x="13" y="15" width="46" height="34" rx="7" fill="none"
+                        stroke="url(#warm)" stroke-width="1.6" opacity="0.5" />
+
+                  <!-- what we read inside it -->
+                  <path d="M19 33h5l3.5-8 5 16 4-11 2.5 3h6"
+                        fill="none" stroke="url(#warm)" stroke-width="2.6"
+                        stroke-linecap="round" stroke-linejoin="round" />
+
+                  <!-- the instrument -->
+                  <circle cx="47" cy="45" r="12" fill="#fff" />
+                  <circle cx="47" cy="45" r="9.5" fill="none" stroke="url(#warm)" stroke-width="2.6" />
+                  <path d="M54 52l5.5 5.5" stroke="url(#warm)" stroke-width="3.2" stroke-linecap="round" />
+                  <path d="M47 41v8M43 45h8" stroke="url(#warm)" stroke-width="2.2" stroke-linecap="round" />
                 </svg>
               </span>
               <span class="door-title">Something is broken</span>
-              <span class="door-body">We look inside your account</span>
+              <span class="door-body">Send it over. We go into your account and fix it</span>
             </button>
           </div>
         </div>
