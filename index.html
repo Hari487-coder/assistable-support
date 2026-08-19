@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Assistable Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500&family=JetBrains+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="wrap masthead-inner">
+        <span class="wordmark">Assistable<span class="wordmark-dot">.</span>support</span>
+        <span class="line-status" id="lineStatus">
+          <span class="line-status-dot" aria-hidden="true"></span>
+          <span id="lineStatusText">Support is open</span>
+        </span>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="lede">
+        <h1>What do you need?</h1>
+        <p>
+          Walk through it step by step, or tell us what broke and we will look inside your
+          account.
+        </p>
+      </section>
+
+      <section class="routes" aria-label="Choose how to get help">
+        <button class="route route-how" id="routeHow" type="button">
+          <span class="route-kicker">Show me how</span>
+          <span class="route-title">Walk me through it</span>
+          <span class="route-body">
+            Follow the real screens, one step at a time, at your own pace.
+          </span>
+        </button>
+
+        <button class="route route-broken" id="routeBroken" type="button">
+          <span class="route-kicker">Something is broken</span>
+          <span class="route-title">Look inside my account</span>
+          <span class="route-body">
+            Describe what happened and a support engineer checks your live account.
+          </span>
+        </button>
+      </section>
+
+      <!-- HOW-TO -->
+      <section class="panel" id="howPanel" hidden aria-labelledby="howHeading">
+        <div class="panel-head">
+          <h2 id="howHeading">Show me how</h2>
+          <span class="tag">Beta &middot; one walkthrough so far</span>
+        </div>
+
+        <div class="picker" id="picker">
+          <label class="field">
+            <span class="field-label">What are you trying to do?</span>
+            <input
+              type="text"
+              id="ask"
+              autocomplete="off"
+              placeholder="How do I make an outbound call?"
+              aria-describedby="askHint"
+            />
+          </label>
+          <p class="hint" id="askHint">Type a question, or pick one below.</p>
+          <ul class="suggestions" id="suggestions"></ul>
+          <p class="nomatch" id="nomatch" hidden>
+            No walkthrough for that yet. Only outbound calls is covered so far. If something
+            is broken rather than unclear,
+            <button class="linkish" type="button" id="toBrokenFromMiss">ask the support bot</button>.
+          </p>
+        </div>
+
+        <!-- Player -->
+        <article class="player" id="player" hidden>
+          <div class="player-head">
+            <h3 id="wtTitle"></h3>
+            <button class="ghost" type="button" id="restart">Start over</button>
+          </div>
+
+          <!-- Signature: the line. Nodes fill as the call connects. -->
+          <ol class="rail" id="rail" aria-label="Progress"></ol>
+
+          <div class="step" id="step">
+            <p class="step-count" id="stepCount"></p>
+            <h4 class="step-title" id="stepTitle"></h4>
+            <p class="step-body" id="stepBody"></p>
+            <figure class="shot" id="shotWrap">
+              <img id="shot" alt="" />
+              <figcaption id="shotCap"></figcaption>
+            </figure>
+          </div>
+
+          <div class="player-foot">
+            <button class="ghost" type="button" id="back">Back</button>
+            <button class="solid" type="button" id="next">Next step</button>
+          </div>
+
+          <div class="done" id="done" hidden>
+            <p>That is the whole flow. If it did not work the way it reads here, the support
+              bot can look at your account.</p>
+            <button class="solid solid-amber" type="button" id="toBrokenFromDone">
+              Something went wrong
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <!-- DEBUG -->
+      <section class="panel panel-broken" id="brokenPanel" hidden aria-labelledby="brokenHeading">
+        <div class="panel-head">
+          <h2 id="brokenHeading">Something is broken</h2>
+          <span class="tag tag-amber">Checks your live account</span>
+        </div>
+        <p class="broken-copy">
+          The support bot takes the details, raises a ticket, and a support engineer opens
+          your actual assistant, call or conversation to find the cause. You get the answer
+          back in the same chat.
+        </p>
+        <p class="broken-copy">
+          Have one of these ready if you can: the conversation id for a chat problem, the
+          call id for a phone problem, or the assistant id for a settings problem.
+        </p>
+        <button class="solid solid-amber" type="button" id="openWidget">
+          Open the support chat
+        </button>
+        <p class="hint" id="widgetHint">It opens in the corner of this page.</p>
+      </section>
+    </main>
+
+    <footer class="wrap foot">
+      <p>Assistable support. The walkthroughs are read-only; the support bot never changes
+        anything without a person looking first.</p>
+    </footer>
+
+    <script src="assets/walkthroughs.js"></script>
+    <script src="assets/app.js"></script>
+
+    <!--
+      The debugging bot: the v2 intake assistant, embedded as a chat launcher.
+      data-account-id is the sub-account id the chat endpoint accepts.
+    -->
+    <script
+      src="https://botdisplay.com/chat-widget.js"
+      data-assistant-id="cmszqyxhm0001l304kula1ga7"
+      data-account-id="1753298396627x629167684234041700"
+      data-assistant-name="Assistable Support"
+      data-color="#1B5E5A"
+      data-position="bottom-right"
+      data-theme="light"
+      data-auto-open="false"
+      data-show-prompt="true"
+      data-prompt-message="Something not working? Tell us what happened."
+      data-greeting-message="Tell me what is going wrong and I will get an engineer to look at your account."
+      data-button-icon="message-circle"
+    ></script>
+  </body>
+</html>
