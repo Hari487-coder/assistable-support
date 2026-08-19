@@ -2,8 +2,9 @@
 
 The landing view is one decision, two doors, one line each:
 
-**Walk me through it** — follow the real screens at your own pace. Beta: one guide
-(outbound calls).
+**How to do it** — follow the real screens at your own pace. Marked Beta on the card,
+because one guide is a thin library and saying so is better than letting someone conclude
+it is broken.
 
 **Something is broken in my account** — opens the chat; we go into the account directly
 and make the fix.
