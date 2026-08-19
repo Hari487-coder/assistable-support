@@ -5,7 +5,12 @@ The landing view is one decision, two doors, one line each:
 **Walk me through it** — follow the real screens at your own pace. Beta: one guide
 (outbound calls).
 
-**Fix it for me** — opens the chat; a support engineer opens the account and sorts it.
+**Consider it fixed** — opens the chat; an engineer goes into the account, fixes it, and
+says what it was.
+
+That title is a confidence claim, not a guarantee. It is the right promise while a human
+works every ticket and the escalation rate is near zero. If tickets ever outgrow that,
+change it before it starts writing cheques support cannot cash.
 
 Each door carries a kicker, a title in the customer's voice, and one sentence saying what
 actually happens. A version with only a title and four words under it was too bare to
