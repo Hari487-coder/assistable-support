@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/styles.css" />
@@ -32,6 +32,7 @@
         <!-- DOORS: the one decision, made obvious -->
         <div class="view" id="viewDoors">
           <h1>Hey, what do you need?</h1>
+          <p class="sub">Two ways to get unstuck. Pick whichever fits.</p>
 
           <div class="doors">
             <button class="door door-answer" id="doorAnswer" type="button">
@@ -66,8 +67,11 @@
                   <path d="M46 44.5l9.5 4.2-3.9 1.4-1.4 3.9z" fill="#fff" />
                 </svg>
               </span>
-              <span class="door-title">Show me how</span>
-              <span class="door-body">Follow along, one screen at a time</span>
+              <span class="door-kicker">Show me how</span>
+              <span class="door-title">Walk me through it</span>
+              <span class="door-body">
+                Follow the real screens, one step at a time, at your own pace.
+              </span>
             </button>
 
             <button class="door door-debug" id="doorDebug" type="button">
@@ -101,8 +105,11 @@
                         stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </span>
+              <span class="door-kicker">Something is broken</span>
               <span class="door-title">Fix it for me</span>
-              <span class="door-body">We go into your account and sort it</span>
+              <span class="door-body">
+                Tell us what happened. A support engineer opens your account and sorts it.
+              </span>
             </button>
           </div>
         </div>

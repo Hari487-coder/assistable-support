@@ -2,12 +2,14 @@
 
 The landing view is one decision, two doors, one line each:
 
-**Show me how** — follow along, one screen at a time. Beta: one guide (outbound calls).
+**Walk me through it** — follow the real screens at your own pace. Beta: one guide
+(outbound calls).
 
-**Fix it for me** — opens the chat; a support engineer goes into the account and sorts it.
+**Fix it for me** — opens the chat; a support engineer opens the account and sorts it.
 
-Both titles are in the customer's voice, and the second promises the outcome rather than
-describing the mechanism.
+Each door carries a kicker, a title in the customer's voice, and one sentence saying what
+actually happens. A version with only a title and four words under it was too bare to
+choose from; a version with a four-item facts list per door was a wall of text.
 
 The subtitles say only the thing that actually separates them: whether anyone goes into
 your account. An earlier version listed four facts per door and read as a wall of text to
@@ -23,8 +25,15 @@ chat leaves you where you started.
 
 ## Type
 
-Inter, matching the portal's own stack (`Inter, Geist, Helvetica, Arial`) at weight
-500-600, so support looks like the product rather than a separate site.
+Outfit for display, Manrope for body.
+
+Outfit is geometric and circle-based, which is the same construction as the Assistable
+mark, so the headings echo the logo instead of sitting next to it. Manrope carries the
+body: warmer and easier to read in a sentence than a display face would be.
+
+The portal itself runs Inter. That is the correct choice inside a dense product UI and
+the wrong one here, where the page has a handful of words and they have to do all the
+work.
 
 ## Run it
 
