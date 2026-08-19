@@ -45,10 +45,25 @@ the control being described.
 
 ## The embedded bot
 
-`index.html` loads `botdisplay.com/chat-widget.js` with:
+`index.html` loads the current Assistable widget:
 
-- `data-assistant-id` — the v2 intake assistant
-- `data-account-id` — the sub-account id the chat endpoint accepts
+```
+https://createassistants.com/chat-widget-v2.js   data-widget-id=<widget record>
+```
 
-Verified loading and rendering on localhost. Before this goes on a real domain, check
-whether the widget enforces a hostname allow-list, and add the domain if so.
+Not `botdisplay.com/chat-widget.js` - that is the older, separate widget and it ignores
+the v2 widget record.
+
+**Appearance is configured in the portal, not here.** The loader fetches
+`api.assistable.ai/api/v1/widget-config/<widget-id>` and that config outranks the
+`data-*` attributes (`autoOpen: config.appearance?.auto_open ?? attribute`). The
+attributes are only a fallback for when the fetch fails, so edit the widget record to
+change colour, auto-open, or the teaser copy.
+
+**That config is cached server-side and takes minutes to refresh.** A cache-busting query
+string does not help; the cache is keyed by widget id. After editing a widget, expect the
+live page to show the old appearance for a few minutes. Verified end to end on localhost:
+a message typed into the widget raised a real ticket in the queue.
+
+Before this goes on a real domain, check whether the widget enforces a hostname
+allow-list, and add the domain if so.

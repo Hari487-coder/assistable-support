@@ -143,11 +143,16 @@
     <script src="assets/app.js"></script>
 
     <!--
-      The debugging bot: the v2 intake assistant, embedded as a chat launcher.
-      data-account-id is the sub-account id the chat endpoint accepts.
+      The debugging bot: the v2 intake assistant.
+
+      This is the current Assistable widget (chat-widget-v2.js, served from the
+      portal origin), keyed by the widget record so its configuration is edited
+      in the portal rather than here. The legacy botdisplay.com loader is a
+      different, older widget - do not use it for a v2 widget.
     -->
     <script
-      src="https://botdisplay.com/chat-widget.js"
+      src="https://createassistants.com/chat-widget-v2.js"
+      data-widget-id="cmszqztj7002fjo041eh3wdfj"
       data-assistant-id="cmszqyxhm0001l304kula1ga7"
       data-account-id="1753298396627x629167684234041700"
       data-assistant-name="Assistable Support"
