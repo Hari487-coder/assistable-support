@@ -5,15 +5,12 @@ The landing view is one decision, two doors, one line each:
 **Walk me through it** — follow the real screens at your own pace. Beta: one guide
 (outbound calls).
 
-**Debug my account and fix it** — opens the chat; an engineer opens the live account,
-finds the cause, and puts it right.
+**Something is broken in my account** — opens the chat; we go into the account directly
+and make the fix.
 
-Both titles are the customer's own request, which is what makes the pair read: walk me
-through it, or debug my account and fix it. The second names the work rather than only
-promising the outcome, so it is clear that someone actually goes and looks.
-
-It is still a confidence claim. It is the right promise while a human works every ticket
-and the escalation rate is near zero; revisit it if volume ever outgrows that.
+The title is the customer's situation in their own words, and the line under it is the
+promise. That is a confidence claim: it is the right one while a human works every ticket
+and the escalation rate is near zero, so revisit it if volume ever outgrows that.
 
 Each door carries a kicker, a title in the customer's voice, and one sentence saying what
 actually happens. A version with only a title and four words under it was too bare to
