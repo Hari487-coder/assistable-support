@@ -4,17 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Assistable Support</title>
+    <meta name="description" content="Guides, help docs and the Assistable community. Whatever you need, start here." />
     <link rel="icon" href="assets/brand/assistable-mark.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
-    <div class="canvas" aria-hidden="true"></div>
+    <div class="wash" aria-hidden="true"></div>
 
     <header class="topbar">
       <div class="brand">
@@ -27,174 +28,28 @@
       </span>
     </header>
 
-    <main>
-      <section class="console" id="console">
-        <!-- DOORS: the one decision, made obvious -->
-        <div class="view" id="viewDoors">
-          <h1>Hey, what do you need?</h1>
-          <p class="sub">Two ways to get unstuck. Pick whichever fits.</p>
-
-          <div class="doors">
-            <button class="door door-answer" id="doorAnswer" type="button">
-              <span class="door-art" aria-hidden="true">
-                <svg viewBox="0 0 72 72" width="70" height="70">
-                  <defs>
-                    <linearGradient id="cool" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0" stop-color="#2E8FE0" /><stop offset="1" stop-color="#57C9D6" />
-                    </linearGradient>
-                    <filter id="lift" x="-30%" y="-30%" width="160%" height="160%">
-                      <feDropShadow dx="0" dy="3" stdDeviation="3.5"
-                                    flood-color="#1B1230" flood-opacity="0.16" />
-                    </filter>
-                  </defs>
-
-                  <circle cx="36" cy="34" r="28" fill="url(#cool)" opacity="0.11" />
-
-                  <g filter="url(#lift)">
-                    <rect x="12" y="16" width="48" height="34" rx="8" fill="#fff" />
-                  </g>
-                  <rect x="12" y="16" width="16" height="34" rx="8" fill="url(#cool)" opacity="0.16" />
-                  <rect x="26" y="16" width="2" height="34" fill="url(#cool)" opacity="0.16" />
-
-                  <rect x="17" y="30" width="6" height="4" rx="2" fill="url(#cool)" opacity="0.75" />
-                  <rect x="33" y="23" width="21" height="4" rx="2" fill="url(#cool)" opacity="0.25" />
-                  <rect x="33" y="31" width="15" height="4.5" rx="2.25" fill="url(#cool)" />
-                  <rect x="33" y="40" width="21" height="4" rx="2" fill="url(#cool)" opacity="0.25" />
-
-                  <!-- instrument: a pointer, because this door shows you where to click -->
-                  <circle cx="50" cy="50" r="13" fill="#fff" />
-                  <circle cx="50" cy="50" r="11" fill="url(#cool)" />
-                  <path d="M46 44.5l9.5 4.2-3.9 1.4-1.4 3.9z" fill="#fff" />
-                </svg>
-              </span>
-              <span class="door-kicker">Step by step <span class="beta">Beta</span></span>
-              <span class="door-title">How to do it</span>
-              <span class="door-body">
-                Pictures of the real screens, with the exact button circled. Faster
-                than waiting for us.
-              </span>
-            </button>
-
-            <button class="door door-debug" id="doorDebug" type="button">
-              <span class="door-art" aria-hidden="true">
-                <svg viewBox="0 0 72 72" width="70" height="70">
-                  <defs>
-                    <linearGradient id="warm" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0" stop-color="#6D3BEE" /><stop offset="1" stop-color="#A855F7" />
-                    </linearGradient>
-                  </defs>
-
-                  <circle cx="36" cy="34" r="28" fill="url(#warm)" opacity="0.11" />
-
-                  <!-- the same screen as the other door: this is your account -->
-                  <g filter="url(#lift)">
-                    <rect x="12" y="16" width="48" height="34" rx="8" fill="#fff" />
-                  </g>
-                  <rect x="12" y="16" width="16" height="34" rx="8" fill="url(#warm)" opacity="0.16" />
-                  <rect x="26" y="16" width="2" height="34" fill="url(#warm)" opacity="0.16" />
-
-                  <!-- what went wrong, mid-screen -->
-                  <path d="M32 33h4l3-7 4.5 14 3.5-9 2 2h5"
-                        fill="none" stroke="url(#warm)" stroke-width="2.6"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                  <rect x="17" y="30" width="6" height="4" rx="2" fill="url(#warm)" opacity="0.6" />
-
-                  <!-- instrument: sorted, because this door ends with it fixed -->
-                  <circle cx="50" cy="50" r="13" fill="#fff" />
-                  <circle cx="50" cy="50" r="11" fill="url(#warm)" />
-                  <path d="M45.4 50.2l3.1 3.2 6.1-6.6" fill="none" stroke="#fff"
-                        stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-              <span class="door-kicker">Fix it for me</span>
-              <span class="door-title">Something is broken in my account</span>
-              <span class="door-body">
-                Tell us what happened. We go into your account directly and make the fix.
-              </span>
-            </button>
-          </div>
-        </div>
-
-        <!-- ASK (answer bot) -->
-        <div class="view" id="viewAsk" hidden>
-          <div class="view-top">
-            <button class="back-link" id="askBack" type="button">
-              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.2"
-                      stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              Back
-            </button>
-            <span class="pill pill-answer">Answer bot</span>
-          </div>
-
-          <h2 class="ask-h">What do you want to do?</h2>
-
-          <div class="prompt">
-            <input id="ask" type="text" autocomplete="off" placeholder="I want to&hellip;"
-                   aria-label="What do you want to do?" />
-            <button class="send" id="send" type="button" aria-label="Find the walkthrough">
-              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                <path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor"
-                      stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-          </div>
-
-          <div class="chips" id="chips"></div>
-
-          <p class="miss" id="miss" hidden>
-            No guide for that yet.
-            <button class="linkish" type="button" id="missToBot">Ask support</button>
-          </p>
-        </div>
-
-        <!-- WALKTHROUGH -->
-        <div class="view" id="viewPlay" hidden>
-          <div class="play-top">
-            <button class="back-link" id="exit" type="button">
-              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.2"
-                      stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              All help
-            </button>
-            <h2 id="wtTitle"></h2>
-            <span class="counter" id="counter"></span>
-          </div>
-
-          <ol class="rail" id="rail" aria-label="Progress"></ol>
-
-          <div class="stage" id="stage">
-            <figure class="art"><img id="art" alt="" /></figure>
-            <div class="say">
-              <h3 id="stepTitle"></h3>
-              <p id="stepBody"></p>
-            </div>
-          </div>
-
-          <div class="play-foot">
-            <button class="btn ghost" id="prev" type="button">Back</button>
-            <div class="foot-right">
-              <button class="btn quiet" id="stuck" type="button">This did not work</button>
-              <button class="btn primary" id="nextBtn" type="button">Next step</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+    <main id="hub" aria-label="Assistable support"></main>
 
     <footer class="foot">
       <p>Every fix is made by a real engineer, in your real account. Never a script.</p>
     </footer>
 
+    <!-- Content, then the components that render it. -->
     <script src="assets/walkthroughs.js"></script>
-    <script src="assets/app.js"></script>
+    <script src="assets/docs.js"></script>
+    <script type="module">
+      import { SupportHub } from "./assets/hub.js";
+      SupportHub(document.getElementById("hub"));
+    </script>
 
     <!--
       The Assistable v2 chat widget (CHAT_WIDGET_V2), created from the support
       help desk template. Appearance, home actions, tabs and help articles live
       on the widget record in the portal.
+
+      Untouched by the hub redesign on purpose. This is the route that ends with
+      an engineer inside the customer's account, it was working before, and the
+      hub only borrows its launcher.
 
       These attributes are the ones the record cannot carry:
 
