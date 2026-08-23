@@ -1,16 +1,16 @@
 /**
- * Support hub: a calm control room, not a documentation warehouse.
+ * Support hub, in assistable.ai's own language.
  *
- * The page is built around one question - can this be solved in thirty
- * seconds, or should the customer just tell us what broke? - so the two ways
- * of answering get equal billing. Search answers the generic question; the
- * chat investigates the specific account. Neither is buried under the other,
- * and every dead end in the first hands over to the second.
+ * Reverse-engineered from the live brand site rather than approximated:
+ * Inter with big tight bold headlines, solid #0071eb actions, flat bordered
+ * cards at 20px, and the signature filled grey panel at 24px - which this
+ * page spends on the one thing that makes this desk different: tell us what
+ * broke, and we check your real account.
  *
- * The chat widget itself is deliberately untouched. It is the route that ends
- * with an engineer inside the customer's account; the hub only borrows its
- * launcher. What the widget says once open lives on the widget record and the
- * intake assistant's prompt, not in this file.
+ * The chat widget itself is deliberately untouched. It is the route that
+ * ends with an engineer inside the customer's account; the hub only borrows
+ * its launcher. What the widget says once open lives on the widget record
+ * and the intake assistant's prompt, not in this file.
  */
 import { Heart, Community } from "./components/brand.js";
 import { QuickHelp } from "./components/resource-grid.js";
@@ -32,9 +32,6 @@ const ICONS = {
     <path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H9l-5 4z"
           fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
     <path d="M9 8.5h6M9 11.5h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
-  fix: `<svg viewBox="0 0 24 24" width="20" height="20">
-    <path d="M14.5 6.5a4 4 0 0 1 5-5l-3 3 .9 2.1L19.5 7.5l3-3a4 4 0 0 1-5 5L8 19a2.1 2.1 0 0 1-3-3z"
-          fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
 };
 
 /**
@@ -58,20 +55,15 @@ const TILES = [
     panelTitle: "Pictures of the real screens, with the button circled",
   },
   {
-    id: "ask", corner: "tr", kind: "chat", icon: ICONS.ask,
-    label: "Ask us",
-    blurb: "A question? Tell us. No forms, no queue.",
-  },
-  {
-    id: "docs", corner: "bl", kind: "expand", icon: ICONS.docs,
+    id: "docs", corner: "tl", kind: "expand", icon: ICONS.docs,
     label: "Help docs",
-    blurb: "Answers to what people actually ask.",
+    blurb: "Answers to what people actually ask us.",
     panelTitle: "Answers to what people actually ask us",
   },
   {
-    id: "fix", corner: "br", kind: "chat", icon: ICONS.fix,
-    label: "Troubleshoot",
-    blurb: "Something broken? We check your real account.",
+    id: "ask", corner: "tr", kind: "chat", icon: ICONS.ask,
+    label: "Ask us",
+    blurb: "A question? Tell us. No forms, no queue.",
   },
 ];
 
@@ -115,26 +107,33 @@ export function SupportHub(root) {
     onAsk: () => { panel.close(); openSupportChat(); },
   });
 
-  /**
-   * Open a panel from any origin element - its tile, a search result row, a
-   * topic chip - starting wherever makes sense. The panel grows out of the
-   * element that was actually pressed, so a search hit becomes the article
-   * rather than summoning an unrelated sheet.
-   */
   const tileFor = (id) => TILES.find((t) => t.id === id);
   function openPanel(id, origin, start) {
     const renderer = id === "guides" ? renderGuides : renderDocs;
     panel.show(tileFor(id), origin, (body, api) => renderer(body, api, start));
   }
 
+  // ── hero: the brand site's type-led opening, with our one signature ────
   const heart = Heart({ mark: "assets/brand/assistable-mark.png" });
 
   const h1 = document.createElement("h1");
   h1.className = "hero-h1";
   h1.textContent = "How can we help?";
 
-  // The reference page proves itself with three numbers under the hero.
-  // Ours are counted from what is actually published, not claimed.
+  const sub = document.createElement("p");
+  sub.className = "hero-sub";
+  sub.textContent =
+    "Search the answers, or tell us what broke. We check your actual account, not a FAQ.";
+
+  const search = SearchHero({
+    docs: window.DOCS || [],
+    guides: window.WALKTHROUGHS || [],
+    onOpenDoc: (doc, row) => openPanel("docs", row, { doc }),
+    onOpenGuide: (guide, row) => openPanel("guides", row, { guide }),
+    onAsk: openSupportChat,
+  });
+
+  // Counted from what is actually published, not claimed.
   const docsAll = window.DOCS || [];
   const stats = document.createElement("div");
   stats.className = "stats";
@@ -150,14 +149,7 @@ export function SupportHub(root) {
     stats.appendChild(el);
   }
 
-  const search = SearchHero({
-    docs: window.DOCS || [],
-    guides: window.WALKTHROUGHS || [],
-    onOpenDoc: (doc, row) => openPanel("docs", row, { doc }),
-    onOpenGuide: (guide, row) => openPanel("guides", row, { guide }),
-    onAsk: openSupportChat,
-  });
-
+  // ── self-serve row ──────────────────────────────────────────────────
   const quickHead = document.createElement("p");
   quickHead.className = "section-k";
   quickHead.textContent = "Quick help";
@@ -168,9 +160,19 @@ export function SupportHub(root) {
       resource.kind === "expand" ? openPanel(resource.id, el) : openSupportChat(),
   });
 
-  // Popular topics: the biggest clusters in the docs, which is the closest
-  // thing to popularity this data honestly has. Not view counts, and not
-  // presented as though it were.
+  // ── the filled panel: the brand site's signature block, spent on the ──
+  //    one thing that makes this desk different.
+  const feature = document.createElement("section");
+  feature.className = "feature";
+  feature.innerHTML = `
+    <h2>Something broken?<br>We check your real account.</h2>
+    <p>Tell us what happened. The AI opens your actual configuration, finds
+       what is wrong, shows you the evidence, and only changes anything after
+       you say yes. Every fix is verified by a real engineer.</p>
+    <button type="button" class="btn-brand" id="featureAsk">Tell us what happened</button>`;
+  feature.querySelector("#featureAsk").addEventListener("click", openSupportChat);
+
+  // ── topics + community ────────────────────────────────────────────────
   const docs = window.DOCS || [];
   const counts = {};
   docs.forEach((d) => (counts[d.group] = (counts[d.group] || 0) + 1));
@@ -201,8 +203,8 @@ export function SupportHub(root) {
 
   const stage = document.createElement("div");
   stage.className = "hub";
-  stage.append(heart, h1, search, stats, quickHead, tiles, topicsHead, topics,
-               Community(COMMUNITY), note);
+  stage.append(heart, h1, sub, search, stats, quickHead, tiles, feature,
+               topicsHead, topics, Community(COMMUNITY), note);
   root.append(stage);
   return { openSupportChat };
 }

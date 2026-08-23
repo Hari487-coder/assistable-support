@@ -16,34 +16,36 @@
 
 :root {
   /*
-   * Jorden's palette, taken from jordenwilliams-site.vercel.app rather than
-   * approximated: pure white, one blue, greys with no violet in them. The
-   * old accent variables keep their names so every rule downstream follows,
-   * but they all resolve to the single accent now - this design gets exactly
-   * one color and spends it on actions.
+   * assistable.ai's rendered language, read off the live site. Its stylesheet
+   * carries a violet-to-amber gradient token, but what the page actually
+   * paints is blue-on-white: Inter, solid #0071eb actions, hairline borders,
+   * flat 20px cards and filled #f5f5f5 panels at 24px. This follows what
+   * renders, not what a shared design-system file left behind.
+   *
+   * The old accent variable names are kept so every rule downstream follows.
    */
   --paper: #ffffff;
   --card: #ffffff;
-  --ink: #14171f;
-  --ink-2: #2b303c;
-  --muted: #5a6172;
-  --faint: #f7f8fa;
-  --line: #e4e7ec;
-  --line-strong: #d3d8e0;
+  --card-soft: #fbfbfd;
+  --ink: #151515;
+  --ink-2: #333333;
+  --muted: #4f4f4f;
+  --faint: #f5f5f5;
+  --line: rgba(21, 21, 21, .08);
+  --line-strong: rgba(21, 21, 21, .18);
 
-  --violet: #1a4dd6;
-  --violet-lift: #1339a5;
-  --cool: #1a4dd6;
-  --brand: #1a4dd6;
+  --violet: #0071eb;
+  --violet-lift: #005fd0;
+  --cool: #0071eb;
+  --brand: #0071eb;
+  --accent-soft: #eaf3ff;
 
-  /* System stack, like the reference: the page reads as native, not themed. */
-  --display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --mono: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  --r-card: 14px;
-  --r-btn: 11px;
-  /* Flat. Borders do the separating; the only shadow left is the dialog's. */
+  --r-card: 20px;
+  --r-btn: 10px;
   --shadow: none;
   --shadow-lift: none;
   --spring: cubic-bezier(.22, 1, .28, 1);
@@ -78,7 +80,9 @@ body {
 /* ── topbar ──────────────────────────────────────────────────────────── */
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; padding: 20px 28px;
+  gap: 16px; padding: 16px 28px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
 }
 .brand { display: flex; align-items: center; gap: 10px }
 .mark { width: 24px; height: 24px; display: block }
@@ -96,7 +100,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .hub {
   position: relative;
   width: 100%;
-  max-width: 552px;
+  max-width: 780px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -110,19 +114,30 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
  * outrank the badge.
  */
 .hero-h1 {
-  margin: 18px 0 22px;
+  margin: 20px 0 0;
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(26px, 4.4vw, 36px);
-  letter-spacing: -.03em;
+  font-size: clamp(34px, 6vw, 54px);
+  letter-spacing: -.01em;
+  line-height: 1.1;
   text-align: center;
   animation: settle 560ms var(--spring) 90ms backwards;
+}
+.hero-sub {
+  margin: 14px 0 26px;
+  max-width: 46ch;
+  text-align: center;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--muted);
+  animation: settle 560ms var(--spring) 130ms backwards;
 }
 
 /* ── search, the primary instrument ──────────────────────────────────── */
 .hero-search {
   position: relative;
   width: 100%;
+  max-width: 560px;
   animation: settle 560ms var(--spring) 150ms backwards;
 }
 .searchbar {
@@ -131,15 +146,16 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   gap: 12px;
   padding: 5px 8px 5px 16px;
   border: 1px solid var(--line-strong);
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--card);
   color: var(--muted);
-  box-shadow: var(--shadow);
+  max-width: 560px;
+  margin: 0 auto;
   transition: border-color 200ms, box-shadow 200ms;
 }
 .searchbar:focus-within {
   border-color: var(--violet);
-  box-shadow: 0 0 0 4px rgba(26, 77, 214, .12);
+  box-shadow: 0 0 0 4px rgba(0, 113, 235, .14);
 }
 .searchbar input {
   flex: 1;
@@ -235,55 +251,94 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 .tiles {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
   width: 100%;
   animation: settle 560ms var(--spring) 240ms backwards;
 }
 .tile {
   display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 15px 18px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding: 20px;
   text-align: left;
   font: inherit;
   color: inherit;
   cursor: pointer;
-  background: var(--card);
-  border: 1px solid var(--line-strong);
-  border-radius: 11px;
-  transition: background 160ms, border-color 160ms, transform 200ms var(--spring);
+  background: var(--card-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  transition: border-color 160ms, background 160ms, transform 200ms var(--spring);
 }
-/* Flat hover: the surface tint, not a lift. Borders do the talking here. */
 .tile:hover, .tile:focus-visible {
-  background: var(--faint);
-  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  background: var(--card);
+  transform: translateY(-2px);
 }
-/* Circular icon chips keep the heart's shape; one grey, so the single accent
-   stays reserved for actions, exactly like the reference. */
+/* Blue-soft chips, the brand's announcement treatment. */
 .tile-icon {
   flex: none;
   display: grid;
   place-items: center;
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  background: var(--faint);
-  color: var(--muted);
-  border: 1px solid var(--line);
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--violet);
+  margin-bottom: 13px;
 }
-.tile:hover .tile-icon, .tile:focus-visible .tile-icon { color: var(--violet) }
-.tile-text { display: flex; flex-direction: column; gap: 2px; min-width: 0 }
+.tile-text { display: flex; flex-direction: column; gap: 4px; min-width: 0 }
 .tile-label {
   font-family: var(--display);
   font-weight: 600;
-  font-size: 16px;
-  letter-spacing: -.018em;
+  font-size: 16.5px;
+  letter-spacing: -.015em;
 }
-.tile-blurb { font-size: 12.5px; color: var(--muted); line-height: 1.4 }
-.tile-arrow { margin-left: auto; flex: none; color: var(--faint);
+.tile-blurb { font-size: 13.5px; color: var(--muted); line-height: 1.5 }
+.tile-arrow { margin-top: 12px; flex: none; color: var(--line-strong);
   transition: transform 220ms var(--spring), color 180ms }
 .tile:hover .tile-arrow, .tile:focus-visible .tile-arrow {
-  transform: translateX(3px); color: var(--muted) }
+  transform: translateX(3px); color: var(--violet) }
+
+/* ── the filled panel: the brand's signature block ───────────────────── */
+.feature {
+  width: 100%;
+  margin-top: 30px;
+  padding: 48px 44px;
+  background: var(--faint);
+  border-radius: 24px;
+  text-align: center;
+  animation: settle 560ms var(--spring) 280ms backwards;
+}
+.feature h2 {
+  margin: 0 0 12px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(24px, 3.6vw, 32px);
+  letter-spacing: -.01em;
+  line-height: 1.15;
+}
+.feature p {
+  margin: 0 auto 22px;
+  max-width: 52ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.btn-brand {
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--violet);
+  border: 0;
+  border-radius: 12px;
+  padding: 13px 26px;
+  cursor: pointer;
+  transition: background 160ms, transform 180ms var(--spring);
+}
+.btn-brand:hover { background: var(--violet-lift); transform: translateY(-1px) }
+.btn-brand:active { transform: translateY(0) }
 
 /* ── popular topics ──────────────────────────────────────────────────── */
 .topics {
@@ -454,8 +509,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   flex-direction: column;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 14px;
-  box-shadow: 0 24px 70px rgba(20, 23, 31, .18);
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(21, 21, 21, .16);
   overflow: hidden;
   transform-origin: top left;
 }
@@ -651,7 +706,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 .docs-search:focus-within {
   border-color: var(--violet);
-  box-shadow: 0 0 0 4px rgba(26, 77, 214, .1);
+  box-shadow: 0 0 0 4px rgba(0, 113, 235, .12);
 }
 .docs-search input {
   flex: 1; border: 0; outline: none; background: none;
@@ -670,14 +725,14 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .cats { display: flex; flex-wrap: wrap; gap: 8px }
 .cat {
   display: inline-flex; align-items: center; gap: 7px;
-  font: inherit; font-size: 13px; font-weight: 500;
-  padding: 8px 13px; border-radius: 999px;
-  border: 1px solid var(--line); background: var(--card); color: var(--ink-2);
+  font: inherit; font-size: 13.5px; font-weight: 600;
+  padding: 9px 15px; border-radius: 10px;
+  border: 0; background: var(--faint); color: var(--muted);
   cursor: pointer;
-  transition: border-color 180ms, color 180ms, transform 180ms var(--spring);
+  transition: background 160ms, color 160ms, transform 180ms var(--spring);
 }
 .cat span { font-size: 11px; color: var(--muted) }
-.cat:hover { border-color: var(--violet); color: var(--violet); transform: translateY(-1px) }
+.cat:hover { background: var(--accent-soft); color: var(--violet); transform: translateY(-1px) }
 
 .doc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px }
 .doc-row {
@@ -752,12 +807,17 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
  */
 @media (max-width: 860px) {
   main { padding: 4px 18px 36px }
-  .hub { max-width: 440px }
+  .hub { max-width: 460px }
   .hub-heart { width: 78px; height: 78px }
   .hub-mark { width: 42px; height: 42px }
-  .hero-h1 { margin: 14px 0 18px }
+  .hero-h1 { margin: 14px 0 0 }
+  .hero-sub { font-size: 15px }
   .searchbar input { font-size: 16px } /* under 16px iOS zooms the page */
-  /* One column of tiles: a thumb wants height, not halves. */
+  .tiles { grid-template-columns: 1fr }
+  .tile { flex-direction: row; align-items: center; gap: 13px; padding: 16px 18px }
+  .tile-icon { margin-bottom: 0 }
+  .tile-arrow { margin-top: 0; margin-left: auto }
+  .feature { padding: 34px 22px; border-radius: 20px }
   .stats { gap: 26px }
   .hit-meta { display: none }
 
@@ -780,7 +840,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
     animation: none !important;
     transition-duration: 1ms !important;
   }
-  .tile, .asm, .hero-h1, .hero-search, .tiles, .topics, .community,
-  .section-k { opacity: 1; transform: none }
+  .tile, .asm, .hero-h1, .hero-sub, .hero-search, .tiles, .topics, .feature,
+  .community, .section-k, .stats { opacity: 1; transform: none }
   .scrim { transition: none }
 }
