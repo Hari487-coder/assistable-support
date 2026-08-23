@@ -115,7 +115,103 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   gap: 12px;
   animation: settle 620ms var(--spring) both;
 }
-.hub-mark { width: 60px; height: 60px; display: block }
+/* ── the heart ───────────────────────────────────────────────────────── */
+/*
+ * The mark beats: two pumps and a long exhale on a 3.4s cycle. A real cardiac
+ * shape - lub, dip, dub, settle - slowed until it reads as breathing, because
+ * a literal 60bpm on a hero mark reads as urgency and this page's message is
+ * the opposite of urgency.
+ *
+ * Everything the beat touches is transform and opacity. The deeper shadow is
+ * a pre-drawn pseudo-element faded in and out, because animating box-shadow
+ * itself is a paint on every frame and animating opacity is not.
+ *
+ * What leaves the box on each beat is a 1.5px stroke that keeps the box's own
+ * rounded-square shape - the topbar status dot's "ring that leaves", grown up.
+ * Deliberately not a glow: a glow on this mark was tried once on the desk and
+ * rejected as sun-like. Two ripples per cycle, one per beat, the second
+ * offset by exactly the lub-to-dub gap so the rings and the pumps are one
+ * rhythm rather than two coincidences.
+ */
+.hub-heart {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 26px;
+  background: linear-gradient(160deg, #ffffff, #faf7fe);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  animation: heart-box 3.4s ease-in-out infinite;
+}
+.hub-heart::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--shadow-lift);
+  opacity: 0;
+  animation: heart-shadow 3.4s ease-in-out infinite;
+}
+.hub-mark {
+  width: 54px;
+  height: 54px;
+  display: block;
+  transform-origin: center;
+  animation: heart-mark 3.4s ease-in-out infinite;
+}
+/* Base state is invisible, and the animation is what brings a ripple up - so
+   under prefers-reduced-motion the rings simply never exist. */
+.hub-pulse,
+.hub-pulse::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid var(--violet);
+  opacity: 0;
+  pointer-events: none;
+}
+.hub-pulse { animation: heart-ripple 3.4s cubic-bezier(.3, .6, .4, 1) infinite }
+.hub-pulse::before {
+  content: "";
+  border-color: var(--violet-lift);
+  animation: heart-ripple 3.4s cubic-bezier(.3, .6, .4, 1) .44s infinite;
+}
+
+/* A heart that notices you. Everything speeds up together - box, mark and
+   both ripples - so the beats and their rings stay one rhythm, and the
+   second ripple's offset is rescaled to the faster lub-to-dub gap. */
+.hub-heart:hover,
+.hub-heart:hover .hub-mark,
+.hub-heart:hover .hub-pulse,
+.hub-heart:hover .hub-pulse::before { animation-duration: 2s }
+.hub-heart:hover .hub-pulse::before { animation-delay: .26s }
+
+@keyframes heart-mark {
+  0%, 30%, 100% { transform: scale(1) }
+  7%  { transform: scale(1.08) }
+  13% { transform: scale(1.02) }
+  20% { transform: scale(1.055) }
+}
+@keyframes heart-box {
+  0%, 30%, 100% { transform: scale(1) }
+  7%  { transform: scale(1.022) }
+  13% { transform: scale(1.008) }
+  20% { transform: scale(1.015) }
+}
+@keyframes heart-shadow {
+  0%, 32%, 100% { opacity: 0 }
+  7%  { opacity: .8 }
+  13% { opacity: .3 }
+  20% { opacity: .55 }
+}
+@keyframes heart-ripple {
+  0%, 6% { opacity: 0; transform: scale(1) }
+  9%  { opacity: .5; transform: scale(1.02) }
+  58% { opacity: 0; transform: scale(1.5) }
+  100% { opacity: 0; transform: scale(1.5) }
+}
 .hub-line {
   margin: 0;
   font-family: var(--display);
@@ -541,7 +637,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
     order: -1;
     margin-bottom: 10px;
   }
-  .hub-mark { width: 52px; height: 52px }
+  .hub-heart { width: 84px; height: 84px; border-radius: 22px }
+  .hub-mark { width: 46px; height: 46px }
   .cell.at-tl .card, .cell.at-tr .card,
   .cell.at-bl .card, .cell.at-br .card { grid-column: 1; grid-row: auto }
   .card {
