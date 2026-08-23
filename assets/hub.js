@@ -53,7 +53,14 @@ const RESOURCES = [
   },
   {
     id: "discord", label: "Discord", corner: "bl", kind: "link",
-    href: "https://discord.gg/Puse4ka7",
+    // INTERIM. Every known invite is dead - discord.gg/Puse4ka7 (what support
+    // agents were sending customers) and discord.gg/HPqCJWZU (what assistable.ai
+    // itself links, also broken for everyone) both return Unknown Invite, and
+    // the guild widget is disabled so no invite can be minted from outside.
+    // This is the server itself: members land in it, non-members need the
+    // permanent invite that only an admin can create. Swap this the moment one
+    // exists, and fix the homepage link while at it.
+    href: "https://discord.com/channels/1495316624108945479",
     blurb: "Talk with the Assistable community.",
     action: "Open Discord", icon: ICONS.discord,
   },
