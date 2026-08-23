@@ -62,7 +62,7 @@ export function DocsPanel({ docs, onAsk }) {
   return function render(host) {
     host.innerHTML = `
       <div class="docs">
-        <label class="docs-search">
+        <label class="docs-search asm asm-t" style="--i:0">
           <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
             <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2" />
             <path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2"
@@ -78,13 +78,13 @@ export function DocsPanel({ docs, onAsk }) {
 
     function article(doc) {
       body.innerHTML = `
-        <button type="button" class="back" id="dBack">
+        <button type="button" class="back asm asm-l" style="--i:0" id="dBack">
           <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
             <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.2"
                   stroke-linecap="round" stroke-linejoin="round" /></svg>
           All help
         </button>
-        <article class="doc">
+        <article class="doc asm asm-b" style="--i:1">
           <p class="doc-group">${esc(doc.group)}${doc.topic ? " &middot; " + esc(doc.topic) : ""}</p>
           <h3>${esc(doc.q)}</h3>
           ${doc.agentVoice ? `<p class="doc-flag">This answer is still written for
@@ -127,17 +127,21 @@ export function DocsPanel({ docs, onAsk }) {
 
     function home() {
       body.innerHTML = `
-        <p class="docs-heading">Browse by topic</p>
+        <p class="docs-heading asm asm-l" style="--i:1">Browse by topic</p>
         <div class="cats"></div>
-        <p class="docs-heading">Most asked</p>
+        <p class="docs-heading asm asm-l" style="--i:2.5">Most asked</p>
         <ul class="doc-list" id="popular"></ul>`;
 
       const cats = body.querySelector(".cats");
-      groups.forEach((g) => {
+      // Chips and rows carry fractional --i in two interleaved streams, so the
+      // groups converge at once from different directions rather than queueing
+      // behind each other - plates arriving together, not a bullet list.
+      groups.forEach((g, j) => {
         const n = docs.filter((d) => d.group === g).length;
         const b = document.createElement("button");
         b.type = "button";
-        b.className = "cat";
+        b.className = "cat asm asm-b";
+        b.style.setProperty("--i", String(1.5 + j * 0.4));
         b.innerHTML = `${esc(g)}<span>${n}</span>`;
         b.addEventListener("click", () =>
           list(docs.filter((d) => d.group === g), g));
@@ -154,11 +158,12 @@ export function DocsPanel({ docs, onAsk }) {
         .slice(0, 6);
 
       const ul = body.querySelector("#popular");
-      popular.forEach((d) => {
+      popular.forEach((d, k) => {
         const li = document.createElement("li");
         const b = document.createElement("button");
         b.type = "button";
-        b.className = "doc-row";
+        b.className = `doc-row asm ${k % 2 ? "asm-r" : "asm-l"}`;
+        b.style.setProperty("--i", String(3 + k * 0.6));
         b.innerHTML = `<span class="doc-q">${esc(d.q)}</span>
           <span class="doc-cat">${esc(d.topic || d.group)}</span>`;
         b.addEventListener("click", () => article(d));

@@ -26,9 +26,11 @@ function preload(guide) {
 /** One guide, walked a step at a time. */
 function player(host, guide, { onBack, onStuck }) {
   let i = 0;
+  // The suit-up: header from above, rail after it, the screenshot rising to
+  // meet them, controls last. Four plates, one rhythm.
   host.innerHTML = `
     <div class="walk">
-      <div class="walk-top">
+      <div class="walk-top asm asm-t" style="--i:0">
         <button type="button" class="back" id="gBack">
           <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
             <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.2"
@@ -38,12 +40,12 @@ function player(host, guide, { onBack, onStuck }) {
         <h3>${esc(guide.title)}</h3>
         <span class="counter" id="gCount"></span>
       </div>
-      <ol class="rail" id="gRail" aria-label="Progress"></ol>
-      <div class="stage" id="gStage">
+      <ol class="rail asm asm-t" style="--i:1" id="gRail" aria-label="Progress"></ol>
+      <div class="stage asm asm-b" style="--i:2" id="gStage">
         <figure class="art"><img id="gArt" alt="" /></figure>
         <div class="say"><h4 id="gTitle"></h4><p id="gBody"></p></div>
       </div>
-      <div class="walk-foot">
+      <div class="walk-foot asm asm-b" style="--i:3">
         <button type="button" class="btn ghost" id="gPrev">Back</button>
         <div class="foot-right">
           <button type="button" class="btn quiet" id="gStuck">This did not work</button>
@@ -135,17 +137,19 @@ function player(host, guide, { onBack, onStuck }) {
 /** The shelf. */
 function shelf(host, guides, open) {
   if (!guides.length) {
-    host.innerHTML = `<p class="empty">No guides published yet. The chat below can
-      still get you to a person.</p>`;
+    host.innerHTML = `<p class="empty asm asm-b" style="--i:1">No guides published
+      yet. The chat below can still get you to a person.</p>`;
     return;
   }
   host.innerHTML = `<div class="shelf"></div>`;
   const row = host.querySelector(".shelf");
 
-  guides.forEach((g) => {
+  guides.forEach((g, i) => {
     const b = document.createElement("button");
     b.type = "button";
-    b.className = "guide";
+    // Shelf rows land alternately from left and right, like plates converging.
+    b.className = `guide asm ${i % 2 ? "asm-r" : "asm-l"}`;
+    b.style.setProperty("--i", String(1 + i));
     b.innerHTML = `
       <span class="guide-shot">
         <img src="${esc(g.steps[0].art)}" alt="" loading="lazy" />

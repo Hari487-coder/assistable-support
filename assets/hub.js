@@ -10,7 +10,7 @@
  * and a redesign is not a reason to re-plumb the one path that matters most.
  * The hub only borrows its launcher.
  */
-import { CenterBrand } from "./components/brand.js";
+import { Heart, HubFooter } from "./components/brand.js";
 import { ResourceGrid } from "./components/resource-grid.js";
 import { ExpandedResourcePanel } from "./components/expanded-panel.js";
 import { GuidesPanel } from "./components/guides.js";
@@ -111,15 +111,21 @@ export function SupportHub(root) {
     }),
   };
 
-  const stage = document.createElement("div");
-  stage.className = "hub";
-  stage.append(
+  // The cluster: four cards docked at the corners of the heart itself, laid
+  // out by one grid so the narrow screen is a re-flow, not a second design.
+  const cluster = document.createElement("div");
+  cluster.className = "cluster";
+  cluster.append(
     ResourceGrid({
       resources: RESOURCES,
       onOpen: (resource, card) => panel.show(resource, card, renderers[resource.id]),
     }),
-    CenterBrand({ mark: "assets/brand/assistable-mark.png", onAsk: openSupportChat }),
+    Heart({ mark: "assets/brand/assistable-mark.png" }),
   );
+
+  const stage = document.createElement("div");
+  stage.className = "hub";
+  stage.append(cluster, HubFooter({ onAsk: openSupportChat }));
 
   const note = document.createElement("p");
   note.className = "hub-note";

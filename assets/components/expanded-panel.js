@@ -37,6 +37,28 @@ export function ExpandedResourcePanel({ root }) {
     );
   }
 
+  /**
+   * Put the panel where the card is, not in the middle of the screen.
+   *
+   * The card is docked at one corner of the mark, and the corner it leads
+   * with is the corner that stays put: the panel's matching corner is set to
+   * the card's, clamped so the panel never leaves the viewport, and the
+   * growth radiates out from there. The card enlarges where it stands.
+   */
+  function place(el, from, corner) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const { width: w, height: h } = el.getBoundingClientRect();
+    const mx = Math.max(8, Math.min(20, (vw - w) / 2));
+    const my = Math.max(8, Math.min(20, (vh - h) / 2));
+    let left = corner === "tr" || corner === "br" ? from.right - w : from.left;
+    let top = corner === "bl" || corner === "br" ? from.bottom - h : from.top;
+    left = Math.min(Math.max(left, mx), vw - mx - w);
+    top = Math.min(Math.max(top, my), vh - my - h);
+    el.style.left = left + "px";
+    el.style.top = top + "px";
+  }
+
   /** Grow from the card's rectangle to the panel's own. */
   function flip(el, from) {
     const to = el.getBoundingClientRect();
@@ -128,15 +150,18 @@ export function ExpandedResourcePanel({ root }) {
 
     const head = document.createElement("header");
     head.className = "panel-head";
+    // Title from the left, close from the right: the first two plates land
+    // together from opposite sides.
     head.innerHTML = `
-      <div>
+      <div class="asm asm-l" style="--i:0">
         <p class="panel-kicker">${resource.label}</p>
         <h2 class="panel-title">${resource.panelTitle}</h2>
       </div>`;
 
     const shut = document.createElement("button");
     shut.type = "button";
-    shut.className = "panel-close";
+    shut.className = "panel-close asm asm-r";
+    shut.style.setProperty("--i", "0");
     // Labelled, not just an icon: "close" alone does not say what closes.
     shut.setAttribute("aria-label", `Close ${resource.label}`);
     shut.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -152,8 +177,10 @@ export function ExpandedResourcePanel({ root }) {
     document.body.append(scrim, el);
 
     // Content is rendered after the panel is in the document, so anything that
-    // measures itself measures the real thing.
+    // measures itself measures the real thing. Placement happens before the
+    // FLIP measures its destination, or it would animate to the wrong spot.
     render(body, { close });
+    place(el, from, resource.corner || "tl");
 
     requestAnimationFrame(() => scrim.classList.add("on"));
     flip(el, from);
