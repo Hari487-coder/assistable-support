@@ -75,7 +75,7 @@ export function ExpandedResourcePanel({ root }) {
     return el.animate(
       [
         { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: 0.35, borderRadius: fromRadius },
-        { transform: "none", opacity: 1, borderRadius: "22px" },
+        { transform: "none", opacity: 1, borderRadius: "14px" },
       ],
       { duration: OPEN_MS, easing: SPRING, fill: "both" },
     );
@@ -121,7 +121,7 @@ export function ExpandedResourcePanel({ root }) {
 
     const flight = el.animate(
       [
-        { transform: "none", opacity: 1, borderRadius: "22px" },
+        { transform: "none", opacity: 1, borderRadius: "14px" },
         {
           transform: `translate(${from.left - to.left}px, ${from.top - to.top}px)
                       scale(${from.width / to.width}, ${from.height / to.height})`,

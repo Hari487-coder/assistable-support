@@ -15,28 +15,37 @@
  */
 
 :root {
-  --paper: #f7f5fb;
+  /*
+   * Jorden's palette, taken from jordenwilliams-site.vercel.app rather than
+   * approximated: pure white, one blue, greys with no violet in them. The
+   * old accent variables keep their names so every rule downstream follows,
+   * but they all resolve to the single accent now - this design gets exactly
+   * one color and spends it on actions.
+   */
+  --paper: #ffffff;
   --card: #ffffff;
-  --ink: #14102a;
-  --ink-2: #3c3455;
-  --muted: #6f6885;
-  --faint: #f0ecf7;
-  --line: #e7e1f0;
-  --line-strong: #d9d1e8;
+  --ink: #14171f;
+  --ink-2: #2b303c;
+  --muted: #5a6172;
+  --faint: #f7f8fa;
+  --line: #e4e7ec;
+  --line-strong: #d3d8e0;
 
-  --violet: #6d3bee;
-  --violet-lift: #a855f7;
-  --cool: #2e8fe0;
-  --brand: linear-gradient(135deg, var(--violet), var(--violet-lift));
+  --violet: #1a4dd6;
+  --violet-lift: #1339a5;
+  --cool: #1a4dd6;
+  --brand: #1a4dd6;
 
-  --display: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
-  --font: "Inter Tight", "Segoe UI", system-ui, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, monospace;
+  /* System stack, like the reference: the page reads as native, not themed. */
+  --display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
-  --r-card: 20px;
+  --r-card: 14px;
   --r-btn: 11px;
-  --shadow: 0 1px 2px rgba(20, 16, 42, .04), 0 10px 30px rgba(20, 16, 42, .06);
-  --shadow-lift: 0 2px 6px rgba(20, 16, 42, .06), 0 24px 56px rgba(20, 16, 42, .13);
+  /* Flat. Borders do the separating; the only shadow left is the dialog's. */
+  --shadow: none;
+  --shadow-lift: none;
   --spring: cubic-bezier(.22, 1, .28, 1);
 }
 
@@ -54,14 +63,7 @@ body {
   min-height: 100%;
 }
 
-.wash {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(48rem 26rem at 14% -6%, rgba(109, 59, 238, .07), transparent 60%),
-    radial-gradient(42rem 24rem at 88% 2%, rgba(46, 143, 224, .06), transparent 62%);
-}
+.wash { display: none }
 
 .sr-only {
   position: absolute;
@@ -84,7 +86,7 @@ body {
 .brandname-thin { font-weight: 500; color: var(--muted) }
 .status {
   display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  font-size: 12px; color: var(--muted);
 }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #16a06a }
 
@@ -94,7 +96,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .hub {
   position: relative;
   width: 100%;
-  max-width: 620px;
+  max-width: 552px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -127,9 +129,9 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 6px 8px 6px 18px;
+  padding: 5px 8px 5px 16px;
   border: 1px solid var(--line-strong);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--card);
   color: var(--muted);
   box-shadow: var(--shadow);
@@ -137,7 +139,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 .searchbar:focus-within {
   border-color: var(--violet);
-  box-shadow: 0 0 0 4px rgba(109, 59, 238, .12), var(--shadow);
+  box-shadow: 0 0 0 4px rgba(26, 77, 214, .12);
 }
 .searchbar input {
   flex: 1;
@@ -149,7 +151,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   color: var(--ink);
   padding: 13px 4px;
 }
-.searchbar input::placeholder { color: #a49dba }
+.searchbar input::placeholder { color: #9aa1b0 }
 
 /* Results drop over the page, not into it: the layout below never jumps. */
 .results {
@@ -162,8 +164,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   padding: 8px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 16px;
-  box-shadow: var(--shadow-lift);
+  border-radius: 12px;
+  box-shadow: 0 14px 40px rgba(20, 23, 31, .12);
   max-height: 342px;
   overflow-y: auto;
 }
@@ -185,8 +187,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 .hit:hover, .hit:focus-visible { background: var(--faint) }
 .hit-kind {
-  font-family: var(--mono);
   font-size: 10px;
+  font-weight: 600;
   letter-spacing: .05em;
   text-transform: uppercase;
   color: var(--muted);
@@ -199,21 +201,42 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .hit-ask { border-top: 1px solid var(--line); border-radius: 0 0 11px 11px; margin-top: 4px; padding-top: 13px }
 .hit-ask .hit-title { font-weight: 600; color: var(--violet) }
 
+/* ── the stats strip, like the reference's hero numbers ──────────────── */
+.stats {
+  display: flex;
+  gap: 34px;
+  margin-top: 18px;
+  animation: settle 560ms var(--spring) 180ms backwards;
+}
+.stat { display: flex; flex-direction: column; gap: 2px; align-items: center }
+.stat b {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.stat span {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 /* ── quick help ──────────────────────────────────────────────────────── */
 .section-k {
   align-self: flex-start;
   margin: 30px 0 10px;
-  font-family: var(--mono);
   font-size: 10.5px;
-  letter-spacing: .08em;
+  font-weight: 600;
+  letter-spacing: .03em;
   text-transform: uppercase;
   color: var(--muted);
   animation: settle 560ms var(--spring) 210ms backwards;
 }
 .tiles {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 10px;
   width: 100%;
   animation: settle 560ms var(--spring) 240ms backwards;
 }
@@ -221,46 +244,42 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   display: flex;
   align-items: center;
   gap: 13px;
-  padding: 15px 16px;
+  padding: 15px 18px;
   text-align: left;
   font: inherit;
   color: inherit;
   cursor: pointer;
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  transition: transform 220ms var(--spring), box-shadow 220ms, border-color 180ms;
+  border: 1px solid var(--line-strong);
+  border-radius: 11px;
+  transition: background 160ms, border-color 160ms, transform 200ms var(--spring);
 }
+/* Flat hover: the surface tint, not a lift. Borders do the talking here. */
 .tile:hover, .tile:focus-visible {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lift);
+  background: var(--faint);
+  transform: translateY(-1px);
 }
-/* Circular icon chips: the heart's shape, carried through the instruments. */
+/* Circular icon chips keep the heart's shape; one grey, so the single accent
+   stays reserved for actions, exactly like the reference. */
 .tile-icon {
   flex: none;
   display: grid;
   place-items: center;
-  width: 40px; height: 40px;
+  width: 38px; height: 38px;
   border-radius: 50%;
   background: var(--faint);
-  color: var(--violet);
+  color: var(--muted);
+  border: 1px solid var(--line);
 }
-.tile-guides .tile-icon { background: #eef7fd; color: var(--cool) }
-.tile-ask .tile-icon { background: #e9f6f0; color: #16a06a }
-.tile-fix .tile-icon { background: #fdf3e7; color: #b06a10 }
-.tile-guides:hover, .tile-guides:focus-visible { border-color: #b7dcf5 }
-.tile-docs:hover, .tile-docs:focus-visible { border-color: #d5c2f8 }
-.tile-ask:hover, .tile-ask:focus-visible { border-color: #b9e2cf }
-.tile-fix:hover, .tile-fix:focus-visible { border-color: #f0dcc0 }
+.tile:hover .tile-icon, .tile:focus-visible .tile-icon { color: var(--violet) }
 .tile-text { display: flex; flex-direction: column; gap: 2px; min-width: 0 }
 .tile-label {
   font-family: var(--display);
   font-weight: 600;
-  font-size: 15px;
-  letter-spacing: -.015em;
+  font-size: 16px;
+  letter-spacing: -.018em;
 }
-.tile-blurb { font-size: 12px; color: var(--muted); line-height: 1.4 }
+.tile-blurb { font-size: 12.5px; color: var(--muted); line-height: 1.4 }
 .tile-arrow { margin-left: auto; flex: none; color: var(--faint);
   transition: transform 220ms var(--spring), color 180ms }
 .tile:hover .tile-arrow, .tile:focus-visible .tile-arrow {
@@ -286,13 +305,13 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   animation: settle 560ms var(--spring) 360ms backwards;
 }
 .community-k {
-  font-family: var(--mono);
   font-size: 10.5px;
-  letter-spacing: .08em;
+  font-weight: 600;
+  letter-spacing: .03em;
   text-transform: uppercase;
 }
-.community a { color: var(--ink-2); font-weight: 600; text-decoration: none }
-.community a:hover { color: var(--violet); text-decoration: underline }
+.community a { color: var(--violet); font-weight: 600; text-decoration: none }
+.community a:hover { color: var(--violet-lift); text-decoration: underline }
 
 /* ── the heart ───────────────────────────────────────────────────────── */
 /*
@@ -319,7 +338,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   width: 92px;
   height: 92px;
   border-radius: 50%;
-  background: linear-gradient(160deg, #ffffff, #faf7fe);
+  background: var(--card);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
   animation: heart-box 3.4s ease-in-out infinite;
@@ -412,7 +431,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: rgba(20, 16, 42, .34);
+  background: rgba(20, 23, 31, .38);
   backdrop-filter: blur(3px);
   opacity: 0;
   transition: opacity 300ms ease;
@@ -435,8 +454,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   flex-direction: column;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 22px;
-  box-shadow: 0 30px 90px rgba(20, 16, 42, .26);
+  border-radius: 14px;
+  box-shadow: 0 24px 70px rgba(20, 23, 31, .18);
   overflow: hidden;
   transform-origin: top left;
 }
@@ -479,9 +498,9 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 .panel-kicker {
   margin: 0 0 4px;
-  font-family: var(--mono);
   font-size: 10.5px;
-  letter-spacing: .07em;
+  font-weight: 600;
+  letter-spacing: .03em;
   text-transform: uppercase;
   color: var(--violet);
 }
@@ -533,9 +552,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   transition: border-color 180ms, transform 200ms var(--spring), box-shadow 200ms;
 }
 .guide:hover, .guide:focus-visible {
-  border-color: var(--cool);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
+  border-color: var(--line-strong);
+  background: var(--faint);
 }
 .guide-shot {
   flex: none;
@@ -555,7 +573,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   margin: 0; font-family: var(--display); font-weight: 600;
   font-size: 16px; letter-spacing: -.018em;
 }
-.counter { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--muted) }
+.counter { margin-left: auto; font-size: 12px; color: var(--muted) }
 
 .back {
   display: inline-flex; align-items: center; gap: 5px;
@@ -573,7 +591,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .rail-node {
   width: 24px; height: 24px; flex: none;
   border-radius: 50%; display: grid; place-items: center;
-  font-family: var(--mono); font-size: 11px;
+  font-size: 11px; font-weight: 600;
   color: var(--muted); background: var(--faint);
   transition: background 300ms, color 300ms, transform 300ms var(--spring);
 }
@@ -591,7 +609,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .rail .is-done .rail-node { background: var(--brand); color: #fff }
 .rail .is-current .rail-node {
   background: var(--card); color: var(--violet);
-  box-shadow: 0 0 0 2px var(--violet); transform: scale(1.1);
+  box-shadow: 0 0 0 1.5px var(--violet); transform: scale(1.1);
 }
 
 .stage { border: 1px solid var(--line); border-radius: 15px; overflow: hidden }
@@ -619,7 +637,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .btn:hover:not(:disabled) { transform: translateY(-1px) }
 .btn:disabled { opacity: .4; cursor: not-allowed }
 .btn.primary { background: var(--brand); border-color: transparent; color: #fff }
-.btn.primary:hover { filter: brightness(1.07) }
+.btn.primary:hover { background: var(--violet-lift) }
 .btn.quiet { color: var(--muted); background: none; border-color: transparent }
 .btn.quiet:hover { color: var(--ink); border-color: var(--line) }
 
@@ -633,18 +651,18 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 .docs-search:focus-within {
   border-color: var(--violet);
-  box-shadow: 0 0 0 4px rgba(109, 59, 238, .1);
+  box-shadow: 0 0 0 4px rgba(26, 77, 214, .1);
 }
 .docs-search input {
   flex: 1; border: 0; outline: none; background: none;
   font: inherit; font-size: 15px; color: var(--ink);
 }
-.docs-search input::placeholder { color: #a49dba }
+.docs-search input::placeholder { color: #9aa1b0 }
 
 .docs-heading {
   margin: 0 0 10px;
-  font-family: var(--mono);
-  font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase;
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: .03em; text-transform: uppercase;
   color: var(--muted);
 }
 .docs-heading + .doc-list, .cats + .docs-heading { margin-top: 22px }
@@ -658,7 +676,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   cursor: pointer;
   transition: border-color 180ms, color 180ms, transform 180ms var(--spring);
 }
-.cat span { font-family: var(--mono); font-size: 11px; color: var(--muted) }
+.cat span { font-size: 11px; color: var(--muted) }
 .cat:hover { border-color: var(--violet); color: var(--violet); transform: translateY(-1px) }
 
 .doc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px }
@@ -670,12 +688,13 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 .doc-row:hover { background: var(--faint) }
 .doc-q { font-size: 14.5px; color: var(--ink); flex: 1; line-height: 1.45 }
-.doc-cat { font-size: 11.5px; color: var(--muted); flex: none; font-family: var(--mono) }
+.doc-cat { font-size: 11.5px; color: var(--muted); flex: none }
 
 .doc { max-width: 62ch }
 .doc-group {
-  margin: 12px 0 6px; font-family: var(--mono);
-  font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+  margin: 12px 0 6px;
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: .03em; text-transform: uppercase; color: var(--muted);
 }
 .doc h3 {
   margin: 0 0 12px; font-family: var(--display); font-weight: 600;
@@ -684,8 +703,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 /* Said out loud rather than quietly published as if it were finished. */
 .doc-flag {
   margin: 0 0 16px; padding: 10px 13px;
-  border-radius: 11px; background: #fdf6e8; border: 1px solid #f2e2c0;
-  font-size: 12.5px; line-height: 1.5; color: #7a5a17;
+  border-radius: 11px; background: var(--faint); border: 1px solid var(--line-strong);
+  font-size: 12.5px; line-height: 1.5; color: var(--muted);
 }
 .doc-body p { margin: 0 0 12px; font-size: 14.5px; line-height: 1.68; color: var(--ink-2) }
 .doc-body ul { margin: 0 0 14px; padding-left: 20px }
@@ -739,7 +758,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   .hero-h1 { margin: 14px 0 18px }
   .searchbar input { font-size: 16px } /* under 16px iOS zooms the page */
   /* One column of tiles: a thumb wants height, not halves. */
-  .tiles { grid-template-columns: 1fr }
+  .stats { gap: 26px }
   .hit-meta { display: none }
 
   .panel { width: calc(100vw - 20px); height: 88vh; border-radius: 18px }

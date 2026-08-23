@@ -133,6 +133,23 @@ export function SupportHub(root) {
   h1.className = "hero-h1";
   h1.textContent = "How can we help?";
 
+  // The reference page proves itself with three numbers under the hero.
+  // Ours are counted from what is actually published, not claimed.
+  const docsAll = window.DOCS || [];
+  const stats = document.createElement("div");
+  stats.className = "stats";
+  const groupsN = new Set(docsAll.map((d) => d.group)).size;
+  for (const [n, label] of [
+    [docsAll.length, "Answers"],
+    [groupsN, "Topics"],
+    [(window.WALKTHROUGHS || []).length, "Guides"],
+  ]) {
+    const el = document.createElement("span");
+    el.className = "stat";
+    el.innerHTML = `<b>${n}</b><span>${label}</span>`;
+    stats.appendChild(el);
+  }
+
   const search = SearchHero({
     docs: window.DOCS || [],
     guides: window.WALKTHROUGHS || [],
@@ -184,7 +201,7 @@ export function SupportHub(root) {
 
   const stage = document.createElement("div");
   stage.className = "hub";
-  stage.append(heart, h1, search, quickHead, tiles, topicsHead, topics,
+  stage.append(heart, h1, search, stats, quickHead, tiles, topicsHead, topics,
                Community(COMMUNITY), note);
   root.append(stage);
   return { openSupportChat };
