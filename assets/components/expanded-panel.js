@@ -59,8 +59,8 @@ export function ExpandedResourcePanel({ root }) {
     el.style.top = top + "px";
   }
 
-  /** Grow from the card's rectangle to the panel's own. */
-  function flip(el, from) {
+  /** Grow from the pressed element's rectangle to the panel's own. */
+  function flip(el, from, fromRadius) {
     const to = el.getBoundingClientRect();
     if (stillness()) return null;
 
@@ -69,11 +69,12 @@ export function ExpandedResourcePanel({ root }) {
     const sx = Math.max(from.width / to.width, 0.05);
     const sy = Math.max(from.height / to.height, 0.05);
 
-    // The card is a circle, so the panel is born one and squares off as it
-    // grows - the orb becoming the sheet, not a sheet replacing an orb.
+    // Born in the shape of whatever was pressed - a circle, a tile, a search
+    // result row - and squaring off as it grows. The pressed thing becomes
+    // the sheet; a sheet does not replace it.
     return el.animate(
       [
-        { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: 0.35, borderRadius: "50%" },
+        { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: 0.35, borderRadius: fromRadius },
         { transform: "none", opacity: 1, borderRadius: "22px" },
       ],
       { duration: OPEN_MS, easing: SPRING, fill: "both" },
@@ -82,7 +83,7 @@ export function ExpandedResourcePanel({ root }) {
 
   function close() {
     if (!open) return;
-    const { el, scrim, card, restoreTo, onKey } = open;
+    const { el, scrim, card, restoreTo, onKey, fromRadius } = open;
     const from = card.getBoundingClientRect();
     const to = el.getBoundingClientRect();
 
@@ -125,7 +126,7 @@ export function ExpandedResourcePanel({ root }) {
           transform: `translate(${from.left - to.left}px, ${from.top - to.top}px)
                       scale(${from.width / to.width}, ${from.height / to.height})`,
           opacity: 0.25,
-          borderRadius: "50%",
+          borderRadius: fromRadius,
         },
       ],
       { duration: CLOSE_MS, easing: "cubic-bezier(.4, 0, .2, 1)", fill: "both" },
@@ -185,8 +186,9 @@ export function ExpandedResourcePanel({ root }) {
     render(body, { close });
     place(el, from, resource.corner || "tl");
 
+    const fromRadius = getComputedStyle(card).borderRadius || "16px";
     requestAnimationFrame(() => scrim.classList.add("on"));
-    flip(el, from);
+    flip(el, from, fromRadius);
 
     card.setAttribute("aria-expanded", "true");
     root.classList.add("is-expanded");
@@ -213,7 +215,7 @@ export function ExpandedResourcePanel({ root }) {
     };
     document.addEventListener("keydown", onKey, true);
 
-    open = { resource, card, el, scrim, restoreTo: card, onKey };
+    open = { resource, card, el, scrim, restoreTo: card, onKey, fromRadius };
 
     // Into the panel, on the first thing worth reaching rather than the close
     // button - landing on Close reads as "the way out is the main action".

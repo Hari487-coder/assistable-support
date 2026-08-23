@@ -1,84 +1,85 @@
 /**
- * Support hub.
+ * Support hub: a calm control room, not a documentation warehouse.
  *
- * Four ways in around one mark. Two of them expand in place; two leave for the
- * community. The page holds no state beyond which panel is open, because there
- * is nothing else worth remembering.
+ * The page is built around one question - can this be solved in thirty
+ * seconds, or should the customer just tell us what broke? - so the two ways
+ * of answering get equal billing. Search answers the generic question; the
+ * chat investigates the specific account. Neither is buried under the other,
+ * and every dead end in the first hands over to the second.
  *
- * The chat widget is deliberately untouched. It is the route that ends with an
- * engineer inside the customer's account, it was working before this redesign,
- * and a redesign is not a reason to re-plumb the one path that matters most.
- * The hub only borrows its launcher.
+ * The chat widget itself is deliberately untouched. It is the route that ends
+ * with an engineer inside the customer's account; the hub only borrows its
+ * launcher. What the widget says once open lives on the widget record and the
+ * intake assistant's prompt, not in this file.
  */
-import { Heart, HubFooter } from "./components/brand.js";
-import { ResourceGrid } from "./components/resource-grid.js";
+import { Heart, Community } from "./components/brand.js";
+import { QuickHelp } from "./components/resource-grid.js";
+import { SearchHero } from "./components/search.js";
 import { ExpandedResourcePanel } from "./components/expanded-panel.js";
 import { GuidesPanel } from "./components/guides.js";
 import { DocsPanel } from "./components/docs.js";
 
 const ICONS = {
-  guides: `<svg viewBox="0 0 24 24" width="22" height="22">
+  guides: `<svg viewBox="0 0 24 24" width="20" height="20">
     <rect x="3" y="4" width="18" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
     <path d="M8 21h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     <circle cx="12" cy="10.5" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
     <path d="M12 13.1v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
-  docs: `<svg viewBox="0 0 24 24" width="22" height="22">
+  docs: `<svg viewBox="0 0 24 24" width="20" height="20">
     <path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
     <path d="M14 3v4h4M9 12h6M9 16h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
-  discord: `<svg viewBox="0 0 24 24" width="22" height="22">
-    <path d="M9 5.5a13 13 0 0 0-4.2 1.2C3.2 9.4 2.7 12 2.9 14.7A13 13 0 0 0 7 16.7l.9-1.4"
-          fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M15 5.5a13 13 0 0 1 4.2 1.2c1.6 2.7 2.1 5.3 1.9 8a13 13 0 0 1-4.1 2l-.9-1.4"
-          fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-    <ellipse cx="9.2" cy="12.2" rx="1.5" ry="1.8" fill="currentColor"/>
-    <ellipse cx="14.8" cy="12.2" rx="1.5" ry="1.8" fill="currentColor"/></svg>`,
-  skool: `<svg viewBox="0 0 24 24" width="22" height="22">
-    <path d="M12 4L2.5 9 12 14l9.5-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    <path d="M6 11.5V16c0 1.4 2.7 2.6 6 2.6s6-1.2 6-2.6v-4.5"
-          fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  ask: `<svg viewBox="0 0 24 24" width="20" height="20">
+    <path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H9l-5 4z"
+          fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M9 8.5h6M9 11.5h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  fix: `<svg viewBox="0 0 24 24" width="20" height="20">
+    <path d="M14.5 6.5a4 4 0 0 1 5-5l-3 3 .9 2.1L19.5 7.5l3-3a4 4 0 0 1-5 5L8 19a2.1 2.1 0 0 1-3-3z"
+          fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
 };
 
-const RESOURCES = [
+/**
+ * INTERIM Discord destination. Every known invite is dead - discord.gg/Puse4ka7
+ * (what support agents were sending customers) and discord.gg/HPqCJWZU (the
+ * link on assistable.ai itself, broken for everyone) both return Unknown
+ * Invite, and the guild widget is disabled so no invite can be minted from
+ * outside. This is the server itself: members land in it; non-members need
+ * the permanent invite only an admin can create. Swap the moment one exists.
+ */
+const COMMUNITY = {
+  discord: "https://discord.com/channels/1495316624108945479",
+  skool: "https://www.skool.com/assistable",
+};
+
+const TILES = [
   {
-    id: "guides", label: "Visual Guides", corner: "tl", kind: "expand",
-    blurb: "Step-by-step guides to help you get things done.",
-    action: "Browse guides", icon: ICONS.guides,
+    id: "guides", corner: "tl", kind: "expand", icon: ICONS.guides,
+    label: "Guides",
+    blurb: "Learn how, with pictures of the real screens.",
     panelTitle: "Pictures of the real screens, with the button circled",
   },
   {
-    id: "docs", label: "Help Docs", corner: "tr", kind: "expand",
-    blurb: "Find answers, documentation and troubleshooting guides.",
-    action: "Search help", icon: ICONS.docs,
+    id: "ask", corner: "tr", kind: "chat", icon: ICONS.ask,
+    label: "Ask us",
+    blurb: "A question? Tell us. No forms, no queue.",
+  },
+  {
+    id: "docs", corner: "bl", kind: "expand", icon: ICONS.docs,
+    label: "Help docs",
+    blurb: "Answers to what people actually ask.",
     panelTitle: "Answers to what people actually ask us",
   },
   {
-    id: "discord", label: "Discord", corner: "bl", kind: "link",
-    // INTERIM. Every known invite is dead - discord.gg/Puse4ka7 (what support
-    // agents were sending customers) and discord.gg/HPqCJWZU (what assistable.ai
-    // itself links, also broken for everyone) both return Unknown Invite, and
-    // the guild widget is disabled so no invite can be minted from outside.
-    // This is the server itself: members land in it, non-members need the
-    // permanent invite that only an admin can create. Swap this the moment one
-    // exists, and fix the homepage link while at it.
-    href: "https://discord.com/channels/1495316624108945479",
-    blurb: "Talk with the Assistable community.",
-    action: "Open Discord", icon: ICONS.discord,
-  },
-  {
-    id: "skool", label: "Skool", corner: "br", kind: "link",
-    href: "https://www.skool.com/assistable",
-    blurb: "Learn, share and grow with the community.",
-    action: "Open Skool", icon: ICONS.skool,
+    id: "fix", corner: "br", kind: "chat", icon: ICONS.fix,
+    label: "Troubleshoot",
+    blurb: "Something broken? We check your real account.",
   },
 ];
 
 /**
- * Open the support chat by clicking the widget's own launcher inside its shadow
- * root.
- *
- * Targeted by label. A bare "button" selector picks up the teaser toast's close
- * button whenever a teaser is showing, which dismisses the toast and leaves the
- * chat shut - carried over from the previous build, where that was a real bug.
+ * Open the support chat by clicking the widget's own launcher inside its
+ * shadow root. Targeted by label: a bare "button" selector picks up the
+ * teaser toast's close button whenever a teaser is showing, which dismisses
+ * the toast and leaves the chat shut - a real bug in an earlier build.
  */
 function openSupportChat() {
   const api = window.__assistableWidget;
@@ -93,8 +94,6 @@ function openSupportChat() {
     launcher.click();
     return true;
   }
-  // Say so out loud. Silently doing nothing is how somebody decides the page is
-  // broken and leaves.
   const note = document.getElementById("hubNote");
   if (note) {
     note.textContent = "The support chat is still loading. Give it a moment and try again.";
@@ -107,36 +106,75 @@ function openSupportChat() {
 export function SupportHub(root) {
   const panel = ExpandedResourcePanel({ root });
 
-  const renderers = {
-    guides: GuidesPanel({
-      guides: window.WALKTHROUGHS || [],
-      onStuck: () => { panel.close(); openSupportChat(); },
-    }),
-    docs: DocsPanel({
-      docs: window.DOCS || [],
-      onAsk: () => { panel.close(); openSupportChat(); },
-    }),
-  };
+  const renderGuides = GuidesPanel({
+    guides: window.WALKTHROUGHS || [],
+    onStuck: () => { panel.close(); openSupportChat(); },
+  });
+  const renderDocs = DocsPanel({
+    docs: window.DOCS || [],
+    onAsk: () => { panel.close(); openSupportChat(); },
+  });
 
-  // The orbit: the desk Overview's system, brought home. One dashed track,
-  // the beating mark at its centre, four orbs sitting exactly on the ring.
-  const orbit = document.createElement("div");
-  orbit.className = "orbit";
-  const track = document.createElement("span");
-  track.className = "track";
-  track.setAttribute("aria-hidden", "true");
-  orbit.append(
-    track,
-    ResourceGrid({
-      resources: RESOURCES,
-      onOpen: (resource, card) => panel.show(resource, card, renderers[resource.id]),
-    }),
-    Heart({ mark: "assets/brand/assistable-mark.png" }),
-  );
+  /**
+   * Open a panel from any origin element - its tile, a search result row, a
+   * topic chip - starting wherever makes sense. The panel grows out of the
+   * element that was actually pressed, so a search hit becomes the article
+   * rather than summoning an unrelated sheet.
+   */
+  const tileFor = (id) => TILES.find((t) => t.id === id);
+  function openPanel(id, origin, start) {
+    const renderer = id === "guides" ? renderGuides : renderDocs;
+    panel.show(tileFor(id), origin, (body, api) => renderer(body, api, start));
+  }
 
-  const stage = document.createElement("div");
-  stage.className = "hub";
-  stage.append(orbit, HubFooter({ onAsk: openSupportChat }));
+  const heart = Heart({ mark: "assets/brand/assistable-mark.png" });
+
+  const h1 = document.createElement("h1");
+  h1.className = "hero-h1";
+  h1.textContent = "How can we help?";
+
+  const search = SearchHero({
+    docs: window.DOCS || [],
+    guides: window.WALKTHROUGHS || [],
+    onOpenDoc: (doc, row) => openPanel("docs", row, { doc }),
+    onOpenGuide: (guide, row) => openPanel("guides", row, { guide }),
+    onAsk: openSupportChat,
+  });
+
+  const quickHead = document.createElement("p");
+  quickHead.className = "section-k";
+  quickHead.textContent = "Quick help";
+
+  const tiles = QuickHelp({
+    tiles: TILES,
+    onOpen: (resource, el) =>
+      resource.kind === "expand" ? openPanel(resource.id, el) : openSupportChat(),
+  });
+
+  // Popular topics: the biggest clusters in the docs, which is the closest
+  // thing to popularity this data honestly has. Not view counts, and not
+  // presented as though it were.
+  const docs = window.DOCS || [];
+  const counts = {};
+  docs.forEach((d) => (counts[d.group] = (counts[d.group] || 0) + 1));
+  const topGroups = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const topicsHead = document.createElement("p");
+  topicsHead.className = "section-k";
+  topicsHead.textContent = "Popular topics";
+
+  const topics = document.createElement("div");
+  topics.className = "topics";
+  topGroups.forEach(([g, n]) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "cat";
+    b.innerHTML = `${g}<span>${n}</span>`;
+    b.addEventListener("click", () => openPanel("docs", b, { group: g }));
+    topics.appendChild(b);
+  });
 
   const note = document.createElement("p");
   note.className = "hub-note";
@@ -144,6 +182,10 @@ export function SupportHub(root) {
   note.hidden = true;
   note.setAttribute("role", "status");
 
-  root.append(stage, note);
+  const stage = document.createElement("div");
+  stage.className = "hub";
+  stage.append(heart, h1, search, quickHead, tiles, topicsHead, topics,
+               Community(COMMUNITY), note);
+  root.append(stage);
   return { openSupportChat };
 }

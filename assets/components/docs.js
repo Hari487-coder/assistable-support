@@ -39,7 +39,11 @@ function markdown(src) {
     .replace(/`([^`]+)`/g, "<code>$1</code>");
 }
 
-function score(query, doc) {
+/** Reading pace of an average adult; a floor of one so nothing says zero. */
+export const readTime = (answer) =>
+  Math.max(1, Math.round(String(answer).split(/\s+/).length / 200));
+
+export function scoreDoc(query, doc) {
   const q = query.toLowerCase().trim();
   if (!q) return 0;
   const hay = [doc.q.toLowerCase(), doc.topic.toLowerCase(), ...doc.keywords];
@@ -59,7 +63,7 @@ function score(query, doc) {
 export function DocsPanel({ docs, onAsk }) {
   const groups = [...new Set(docs.map((d) => d.group))].sort();
 
-  return function render(host) {
+  return function render(host, _api, start) {
     host.innerHTML = `
       <div class="docs">
         <label class="docs-search asm asm-t" style="--i:0">
@@ -91,8 +95,9 @@ export function DocsPanel({ docs, onAsk }) {
             our support team rather than for you. The facts are right; the wording
             is being rewritten.</p>` : ""}
           <div class="doc-body">${markdown(doc.answer)}</div>
-          <p class="doc-foot">Did this not solve it?
-            <button type="button" class="linkish" id="dAsk">Talk to support</button></p>
+          <p class="doc-foot">Still stuck?
+            <button type="button" class="linkish" id="dAsk">Ask Assistable</button>
+            &mdash; the AI can check your account and tell you what is actually wrong.</p>
         </article>`;
       body.querySelector("#dBack").addEventListener("click", () => {
         input.value = "";
@@ -118,7 +123,7 @@ export function DocsPanel({ docs, onAsk }) {
         b.type = "button";
         b.className = "doc-row";
         b.innerHTML = `<span class="doc-q">${esc(d.q)}</span>
-          <span class="doc-cat">${esc(d.topic || d.group)}</span>`;
+          <span class="doc-cat">${esc(d.topic || d.group)} &middot; ${readTime(d.answer)} min</span>`;
         b.addEventListener("click", () => article(d));
         li.appendChild(b);
         ul.appendChild(li);
@@ -165,7 +170,7 @@ export function DocsPanel({ docs, onAsk }) {
         b.className = `doc-row asm ${k % 2 ? "asm-r" : "asm-l"}`;
         b.style.setProperty("--i", String(3 + k * 0.6));
         b.innerHTML = `<span class="doc-q">${esc(d.q)}</span>
-          <span class="doc-cat">${esc(d.topic || d.group)}</span>`;
+          <span class="doc-cat">${esc(d.topic || d.group)} &middot; ${readTime(d.answer)} min</span>`;
         b.addEventListener("click", () => article(d));
         li.appendChild(b);
         ul.appendChild(li);
@@ -179,7 +184,7 @@ export function DocsPanel({ docs, onAsk }) {
         const q = input.value.trim();
         if (!q) return home();
         const hits = docs
-          .map((d) => ({ d, s: score(q, d) }))
+          .map((d) => ({ d, s: scoreDoc(q, d) }))
           .filter((r) => r.s > 0)
           .sort((a, b) => b.s - a.s)
           .map((r) => r.d);
@@ -187,6 +192,10 @@ export function DocsPanel({ docs, onAsk }) {
       }, 120);
     });
 
-    home();
+    // A search hit or a topic chip lands directly where it pointed, so the
+    // panel opens as the answer rather than as another menu.
+    if (start && start.doc) article(start.doc);
+    else if (start && start.group) list(docs.filter((d) => d.group === start.group), start.group);
+    else home();
   };
 }

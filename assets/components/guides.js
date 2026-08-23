@@ -164,9 +164,11 @@ function shelf(host, guides, open) {
 }
 
 export function GuidesPanel({ guides, onStuck }) {
-  return function render(host) {
+  return function render(host, _api, start) {
     const show = () => shelf(host, guides, (g) =>
       player(host, g, { onBack: show, onStuck }));
-    show();
+    // A search hit plays its guide immediately; Back still leads to the shelf.
+    if (start && start.guide) player(host, start.guide, { onBack: show, onStuck });
+    else show();
   };
 }

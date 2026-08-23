@@ -94,61 +94,206 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .hub {
   position: relative;
   width: 100%;
-  max-width: 900px;
+  max-width: 620px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: 0;
 }
 
 /*
- * The orbit: the desk Overview's system, brought to the front door.
- *
- * One dashed track, the beating mark at its centre, and four small orbs
- * whose centres sit exactly on the ring - placed by cosine, not by nudged
- * margins, so alignment is a computed fact. Names are written under the
- * orbs (over them, on the top pair), the way the desk labels its planets.
- *
- * Each orb hangs off a zero-size .pos point that owns the positioning
- * transform. The orb itself owns the entrance animation and the hover lift.
- * They cannot be one element: a CSS animation replaces the positioning
- * transform outright, and the orb falls to the centre of the page.
+ * The cockpit. One column, one question, and the two ways of answering it
+ * given equal billing: search for the generic, chat for the specific. The
+ * mark sits small above the question - on a control room the instruments
+ * outrank the badge.
  */
-.orbit {
-  position: relative;
-  width: min(100%, 560px);
-  height: 470px;
-  margin: 0 auto;
-}
-.track {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 340px; height: 340px;
-  transform: translate(-50%, -50%);
-  border: 1px dashed var(--line-strong);
-  border-radius: 50%;
-}
-/* Centred by margins, not translate: the heartbeat owns this transform. */
-.hub-heart {
-  position: absolute;
-  left: 50%; top: 50%;
-  margin: -54px 0 0 -54px;
-  z-index: 0;
-}
-/* 170px ring, orbs at the diagonals: 170 x cos(45) = 120. */
-.pos { position: absolute; left: 50%; top: 50%; width: 0; height: 0 }
-.pos.at-tl { transform: translate(-120px, -120px) }
-.pos.at-tr { transform: translate(120px, -120px) }
-.pos.at-bl { transform: translate(-120px, 120px) }
-.pos.at-br { transform: translate(120px, 120px) }
-.hub-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.hero-h1 {
+  margin: 18px 0 22px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(26px, 4.4vw, 36px);
+  letter-spacing: -.03em;
   text-align: center;
-  gap: 12px;
-  animation: settle 620ms var(--spring) both;
+  animation: settle 560ms var(--spring) 90ms backwards;
 }
+
+/* ── search, the primary instrument ──────────────────────────────────── */
+.hero-search {
+  position: relative;
+  width: 100%;
+  animation: settle 560ms var(--spring) 150ms backwards;
+}
+.searchbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px 6px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--muted);
+  box-shadow: var(--shadow);
+  transition: border-color 200ms, box-shadow 200ms;
+}
+.searchbar:focus-within {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 4px rgba(109, 59, 238, .12), var(--shadow);
+}
+.searchbar input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: none;
+  font: inherit;
+  font-size: 16.5px;
+  color: var(--ink);
+  padding: 13px 4px;
+}
+.searchbar input::placeholder { color: #a49dba }
+
+/* Results drop over the page, not into it: the layout below never jumps. */
+.results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0; right: 0;
+  z-index: 30;
+  display: grid;
+  gap: 2px;
+  padding: 8px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lift);
+  max-height: 342px;
+  overflow-y: auto;
+}
+.hit {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 12px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 140ms;
+}
+.hit:hover, .hit:focus-visible { background: var(--faint) }
+.hit-kind {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.hit-kind-guide { color: var(--cool) }
+.hit-kind-ask { color: var(--violet) }
+.hit-title { font-size: 14.5px; line-height: 1.4 }
+.hit-meta { font-size: 11.5px; color: var(--muted); white-space: nowrap }
+.hit-ask { border-top: 1px solid var(--line); border-radius: 0 0 11px 11px; margin-top: 4px; padding-top: 13px }
+.hit-ask .hit-title { font-weight: 600; color: var(--violet) }
+
+/* ── quick help ──────────────────────────────────────────────────────── */
+.section-k {
+  align-self: flex-start;
+  margin: 30px 0 10px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  animation: settle 560ms var(--spring) 210ms backwards;
+}
+.tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  animation: settle 560ms var(--spring) 240ms backwards;
+}
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 16px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  transition: transform 220ms var(--spring), box-shadow 220ms, border-color 180ms;
+}
+.tile:hover, .tile:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+}
+/* Circular icon chips: the heart's shape, carried through the instruments. */
+.tile-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--faint);
+  color: var(--violet);
+}
+.tile-guides .tile-icon { background: #eef7fd; color: var(--cool) }
+.tile-ask .tile-icon { background: #e9f6f0; color: #16a06a }
+.tile-fix .tile-icon { background: #fdf3e7; color: #b06a10 }
+.tile-guides:hover, .tile-guides:focus-visible { border-color: #b7dcf5 }
+.tile-docs:hover, .tile-docs:focus-visible { border-color: #d5c2f8 }
+.tile-ask:hover, .tile-ask:focus-visible { border-color: #b9e2cf }
+.tile-fix:hover, .tile-fix:focus-visible { border-color: #f0dcc0 }
+.tile-text { display: flex; flex-direction: column; gap: 2px; min-width: 0 }
+.tile-label {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -.015em;
+}
+.tile-blurb { font-size: 12px; color: var(--muted); line-height: 1.4 }
+.tile-arrow { margin-left: auto; flex: none; color: var(--faint);
+  transition: transform 220ms var(--spring), color 180ms }
+.tile:hover .tile-arrow, .tile:focus-visible .tile-arrow {
+  transform: translateX(3px); color: var(--muted) }
+
+/* ── popular topics ──────────────────────────────────────────────────── */
+.topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  animation: settle 560ms var(--spring) 300ms backwards;
+}
+
+/* ── community, a footnote rather than a tile ────────────────────────── */
+.community {
+  margin: 34px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 9px;
+  animation: settle 560ms var(--spring) 360ms backwards;
+}
+.community-k {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.community a { color: var(--ink-2); font-weight: 600; text-decoration: none }
+.community a:hover { color: var(--violet); text-decoration: underline }
+
 /* ── the heart ───────────────────────────────────────────────────────── */
 /*
  * The mark beats: two pumps and a long exhale on a 3.4s cycle. A real cardiac
@@ -171,8 +316,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   position: relative;
   display: grid;
   place-items: center;
-  width: 108px;
-  height: 108px;
+  width: 92px;
+  height: 92px;
   border-radius: 50%;
   background: linear-gradient(160deg, #ffffff, #faf7fe);
   border: 1px solid var(--line);
@@ -189,8 +334,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   animation: heart-shadow 3.4s ease-in-out infinite;
 }
 .hub-mark {
-  width: 54px;
-  height: 54px;
+  width: 48px;
+  height: 48px;
   display: block;
   transform-origin: center;
   animation: heart-mark 3.4s ease-in-out infinite;
@@ -246,28 +391,6 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   58% { opacity: 0; transform: scale(1.5) }
   100% { opacity: 0; transform: scale(1.5) }
 }
-.hub-line {
-  margin: 0;
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: clamp(18px, 2.2vw, 22px);
-  letter-spacing: -.025em;
-  line-height: 1.25;
-  max-width: 15ch;
-}
-.hub-ask {
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--violet);
-  background: none;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: border-color 200ms, background 200ms, transform 200ms var(--spring);
-}
-.hub-ask:hover { border-color: var(--violet); background: #f6f0fe; transform: translateY(-1px) }
 
 .hub-note {
   margin: 14px 0 0;
@@ -282,83 +405,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 
 
 /* ── a card ──────────────────────────────────────────────────────────── */
-.card {
-  position: absolute;
-  left: 0; top: 0;
-  margin: -48px 0 0 -48px; /* centre the 96px orb on its .pos point */
-  z-index: 1; /* above the core's ripples, so the pulse passes beneath */
-  display: grid;
-  place-items: center;
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  padding: 0;
-  text-align: center;
-  text-decoration: none;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  background: var(--card);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  /* backwards, not both: a filled-forward animation keeps owning transform
-     after it ends, which silently kills the hover lift. The end frame equals
-     the base state, so releasing it changes nothing visually. */
-  animation: bloom 560ms var(--spring) backwards;
-  transition: transform 240ms var(--spring), box-shadow 240ms, border-color 200ms;
-}
-.at-tl .card { animation-delay: 120ms }
-.at-tr .card { animation-delay: 180ms }
-.at-bl .card { animation-delay: 240ms }
-.at-br .card { animation-delay: 300ms }
 
-.card:hover, .card:focus-visible {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lift);
-  border-color: var(--line-strong);
-}
-
-.card-icon {
-  display: grid;
-  place-items: center;
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  background: var(--faint);
-  color: var(--violet);
-}
-.card-guides .card-icon { background: #eef7fd; color: var(--cool) }
-.card-discord .card-icon { background: #eef1fe; color: #5865f2 }
-.card-skool .card-icon { background: #fff1ec; color: #e0562d }
-
-/* The name lives outside the circle, like the desk's planet labels. The top
-   pair write theirs above, mirroring the ring. */
-.card-label {
-  position: absolute;
-  top: calc(100% + 9px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 140px;
-  text-align: center;
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 13.5px;
-  letter-spacing: -.015em;
-  color: var(--ink);
-  transition: color 180ms;
-}
-.pos.at-tl .card-label, .pos.at-tr .card-label { top: auto; bottom: calc(100% + 9px) }
-.card:hover .card-label, .card:focus-visible .card-label { color: var(--violet) }
-.card-guides:hover .card-label, .card-guides:focus-visible .card-label { color: var(--cool) }
-/* The blurb still exists for screen readers; the ring says it with a name. */
-.card-blurb {
-  position: absolute;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
 
 /* ── the panel a card becomes ────────────────────────────────────────── */
 .scrim {
@@ -668,10 +715,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   from { opacity: 0; transform: translateY(14px) }
   to   { opacity: 1; transform: translateY(0) }
 }
-@keyframes bloom {
-  from { opacity: 0; transform: scale(.2) }
-  to   { opacity: 1; transform: scale(1) }
-}
+
 @keyframes rise {
   from { opacity: 0; transform: translateY(10px) }
   to   { opacity: 1; transform: translateY(0) }
@@ -689,19 +733,14 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
  */
 @media (max-width: 860px) {
   main { padding: 4px 18px 36px }
-  .hub { max-width: 400px; gap: 10px }
-  /* The same orbit, scaled. 126px ring, orbs at 126 x cos(45) = 89. */
-  .orbit { height: 372px }
-  .track { width: 252px; height: 252px }
-  .hub-heart { width: 88px; height: 88px; margin: -44px 0 0 -44px }
-  .hub-mark { width: 46px; height: 46px }
-  .pos.at-tl { transform: translate(-89px, -89px) }
-  .pos.at-tr { transform: translate(89px, -89px) }
-  .pos.at-bl { transform: translate(-89px, 89px) }
-  .pos.at-br { transform: translate(89px, 89px) }
-  .card { width: 80px; height: 80px; margin: -40px 0 0 -40px }
-  .card-icon { width: 32px; height: 32px }
-  .card-label { width: 106px; font-size: 12px }
+  .hub { max-width: 440px }
+  .hub-heart { width: 78px; height: 78px }
+  .hub-mark { width: 42px; height: 42px }
+  .hero-h1 { margin: 14px 0 18px }
+  .searchbar input { font-size: 16px } /* under 16px iOS zooms the page */
+  /* One column of tiles: a thumb wants height, not halves. */
+  .tiles { grid-template-columns: 1fr }
+  .hit-meta { display: none }
 
   .panel { width: calc(100vw - 20px); height: 88vh; border-radius: 18px }
   .panel-head { padding: 18px 18px 14px }
@@ -722,6 +761,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
     animation: none !important;
     transition-duration: 1ms !important;
   }
-  .card, .hub-footer, .asm { opacity: 1; transform: none }
+  .tile, .asm, .hero-h1, .hero-search, .tiles, .topics, .community,
+  .section-k { opacity: 1; transform: none }
   .scrim { transition: none }
 }

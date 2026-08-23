@@ -1,70 +1,53 @@
 /**
- * The four ways in, on a ring around the mark.
+ * Quick help: four ways in, and the split that matters.
  *
- * Same system as the internal desk's Overview, because that is the design
- * this page grew out of: a small orb on a visible track, its name written
- * underneath, not a card big enough to need a paragraph inside it.
+ * Two of these open reference material; two of them start a conversation
+ * with something that can read the actual account. "Ask us" sits beside the
+ * docs as an equal, not below them - a customer who already knows something
+ * is broken should never be routed through documentation first.
  *
- * Two of them expand in place and two leave the site, and that difference is
- * carried by the element itself rather than by styling: an orb that expands
- * is a <button>, an orb that leaves is an <a> with a real href. Screen
- * readers announce the difference, middle-click and "open in new tab" work on
- * the ones that go somewhere, and nothing has to be explained in copy.
- *
- * Each orb sits inside a zero-size .pos point that owns its place on the
- * ring. Position and animation live on different elements on purpose: a CSS
- * animation on the element that carries the positioning transform replaces
- * that transform outright, and the orb lands at the centre of the page.
+ * All four are buttons. The community links moved to their own quiet line,
+ * because joining a Discord is not the same kind of act as getting help, and
+ * putting them in one grid pretended it was.
  */
 
-function card(resource, onOpen) {
-  const opens = resource.kind === "expand";
-  const el = document.createElement(opens ? "button" : "a");
+const ARROW = `<svg class="tile-arrow" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+  <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.1"
+        stroke-linecap="round" stroke-linejoin="round" /></svg>`;
 
-  el.className = `card card-${resource.id}`;
+function tile(resource, onOpen) {
+  const el = document.createElement("button");
+  el.type = "button";
+  el.className = `tile tile-${resource.id} at-${resource.corner}`;
   el.dataset.resource = resource.id;
 
-  if (opens) {
-    el.type = "button";
+  if (resource.kind === "expand") {
+    // The panel grows out of this tile, and the tile says so to a screen
+    // reader. Chat tiles have nothing to expand - they hand over to the chat.
     el.setAttribute("aria-expanded", "false");
-    el.addEventListener("click", () => onOpen(resource, el));
-  } else {
-    el.href = resource.href;
-    el.target = "_blank";
-    el.rel = "noopener noreferrer";
   }
+  el.addEventListener("click", () => onOpen(resource, el));
 
-  // The blurb is for screen readers now - the ring says it visually with a
-  // name alone, the way the desk's orbs do.
   el.innerHTML = `
-    <span class="card-icon" aria-hidden="true">${resource.icon}</span>
-    <span class="card-label">${resource.label}</span>
-    <span class="card-blurb">${resource.blurb}</span>`;
-
-  if (!opens) {
-    const note = document.createElement("span");
-    note.className = "sr-only";
-    note.textContent = " (opens in a new tab)";
-    el.appendChild(note);
-  }
+    <span class="tile-icon" aria-hidden="true">${resource.icon}</span>
+    <span class="tile-text">
+      <span class="tile-label">${resource.label}</span>
+      <span class="tile-blurb">${resource.blurb}</span>
+    </span>
+    ${ARROW}`;
   return el;
 }
 
-export function ResourceGrid({ resources, onOpen }) {
+export function QuickHelp({ tiles, onOpen }) {
   const grid = document.createElement("div");
-  grid.className = "grid";
+  grid.className = "tiles";
   grid.setAttribute("role", "list");
 
-  for (const r of resources) {
+  for (const r of tiles) {
     const item = document.createElement("div");
     item.className = "cell";
     item.setAttribute("role", "listitem");
-
-    const pos = document.createElement("div");
-    pos.className = `pos at-${r.corner}`;
-    pos.appendChild(card(r, onOpen));
-
-    item.appendChild(pos);
+    item.appendChild(tile(r, onOpen));
     grid.appendChild(item);
   }
   return grid;
