@@ -38,25 +38,20 @@ export function ExpandedResourcePanel({ root }) {
   }
 
   /**
-   * Put the panel where the card is, not in the middle of the screen.
+   * The panel opens centred.
    *
-   * The card is docked at one corner of the mark, and the corner it leads
-   * with is the corner that stays put: the panel's matching corner is set to
-   * the card's, clamped so the panel never leaves the viewport, and the
-   * growth radiates out from there. The card enlarges where it stands.
+   * Corner-anchoring made sense when the cards were docked around the mark;
+   * on the brand layout the tiles sit low on the page, so an anchored panel
+   * hugged the bottom edge and read as misplaced. The dialog now takes the
+   * centre of the viewport - the FLIP still grows it out of whatever was
+   * pressed, so the connection to the origin survives the move.
    */
-  function place(el, from, corner) {
+  function place(el) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const { width: w, height: h } = el.getBoundingClientRect();
-    const mx = Math.max(8, Math.min(20, (vw - w) / 2));
-    const my = Math.max(8, Math.min(20, (vh - h) / 2));
-    let left = corner === "tr" || corner === "br" ? from.right - w : from.left;
-    let top = corner === "bl" || corner === "br" ? from.bottom - h : from.top;
-    left = Math.min(Math.max(left, mx), vw - mx - w);
-    top = Math.min(Math.max(top, my), vh - my - h);
-    el.style.left = left + "px";
-    el.style.top = top + "px";
+    el.style.left = Math.max(10, (vw - w) / 2) + "px";
+    el.style.top = Math.max(10, (vh - h) / 2) + "px";
   }
 
   /** Grow from the pressed element's rectangle to the panel's own. */
@@ -184,7 +179,7 @@ export function ExpandedResourcePanel({ root }) {
     // measures itself measures the real thing. Placement happens before the
     // FLIP measures its destination, or it would animate to the wrong spot.
     render(body, { close });
-    place(el, from, resource.corner || "tl");
+    place(el);
 
     const fromRadius = getComputedStyle(card).borderRadius || "16px";
     requestAnimationFrame(() => scrim.classList.add("on"));
