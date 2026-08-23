@@ -118,11 +118,15 @@ export function SupportHub(root) {
     }),
   };
 
-  // The cluster: four cards docked at the corners of the heart itself, laid
-  // out by one grid so the narrow screen is a re-flow, not a second design.
-  const cluster = document.createElement("div");
-  cluster.className = "cluster";
-  cluster.append(
+  // The orbit: the desk Overview's system, brought home. One dashed track,
+  // the beating mark at its centre, four orbs sitting exactly on the ring.
+  const orbit = document.createElement("div");
+  orbit.className = "orbit";
+  const track = document.createElement("span");
+  track.className = "track";
+  track.setAttribute("aria-hidden", "true");
+  orbit.append(
+    track,
     ResourceGrid({
       resources: RESOURCES,
       onOpen: (resource, card) => panel.show(resource, card, renderers[resource.id]),
@@ -132,7 +136,7 @@ export function SupportHub(root) {
 
   const stage = document.createElement("div");
   stage.className = "hub";
-  stage.append(cluster, HubFooter({ onAsk: openSupportChat }));
+  stage.append(orbit, HubFooter({ onAsk: openSupportChat }));
 
   const note = document.createElement("p");
   note.className = "hub-note";
