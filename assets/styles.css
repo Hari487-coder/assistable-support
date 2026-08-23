@@ -170,6 +170,9 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .searchbar input::placeholder { color: #9aa1b0 }
 
 /* Results drop over the page, not into it: the layout below never jumps. */
+/* The class's display would silently beat the hidden attribute's UA rule,
+   leaving an empty bar floating under the search - it shipped that way once. */
+.results[hidden] { display: none }
 .results {
   position: absolute;
   top: calc(100% + 8px);
