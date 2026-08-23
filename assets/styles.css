@@ -102,24 +102,27 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 
 /*
- * The cluster: four cards docked at the corners of the mark itself.
+ * The cluster: four orbs docked around the beating core.
  *
- * Still a grid, not absolute positioning. The heart takes the middle column
- * across both rows, and each card is pulled toward the centre of its cell, so
- * its inner corner sits one gap away from the heart's corner. The heartbeat's
- * ripples pass underneath the cards - they carry z-index for exactly this -
- * which reads as the pulse radiating out beneath the fleet.
+ * Everything is a circle now, and circles change the geometry: a circle
+ * curves away from its own bounding-box corner, so if the boxes merely touch,
+ * the visible edge-to-edge distance on the diagonal is the corner gap plus
+ * all that curvature - about 67px of apparent emptiness. So the orbs are
+ * pulled 32px past their cell edges with negative margins. The boxes overlap;
+ * the drawn circles never do, and the visible gap between every orb's edge
+ * and the core's edge comes out near 20px on the line between their centres.
+ *
+ * Margins rather than transforms, deliberately: the entrance animation owns
+ * transform, and a static translate would be silently overwritten the moment
+ * it finished.
  */
 .cluster {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  /* The heart gets its own middle row. That makes the geometry a fact rather
-     than an outcome: every card's inner corner sits exactly one row-gap and
-     one column-gap from its corner of the box, no matter how tall any card's
-     copy happens to run. Centring the heart across shared rows was tried
-     twice and skewed with the content both times. */
+  /* The heart keeps its own middle row so the geometry is a fact rather than
+     an outcome, whatever any card's copy does. */
   grid-template-rows: auto auto auto;
-  gap: 18px 20px;
+  gap: 0;
   width: 100%;
   align-items: stretch;
 }
@@ -149,8 +152,8 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
  * a pre-drawn pseudo-element faded in and out, because animating box-shadow
  * itself is a paint on every frame and animating opacity is not.
  *
- * What leaves the box on each beat is a 1.5px stroke that keeps the box's own
- * rounded-square shape - the topbar status dot's "ring that leaves", grown up.
+ * What leaves on each beat is a 1.5px circular stroke - the topbar status
+ * dot's "ring that leaves", grown up.
  * Deliberately not a glow: a glow on this mark was tried once on the desk and
  * rejected as sun-like. Two ripples per cycle, one per beat, the second
  * offset by exactly the lub-to-dub gap so the rings and the pumps are one
@@ -160,9 +163,9 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   position: relative;
   display: grid;
   place-items: center;
-  width: 96px;
-  height: 96px;
-  border-radius: 26px;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
   background: linear-gradient(160deg, #ffffff, #faf7fe);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
@@ -268,33 +271,37 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .grid { display: contents }
 .cell { display: contents }
 
-/* Each card hugs the centre of its cell, so its inner corner points at the
-   heart's corner rather than drifting to the page edge. */
+/* Each orb hugs the centre and is pulled 32px past its cell edge on its two
+   inner sides - the overlap that closes the diagonal to a real gap. */
 .cell.at-tl .card, .cell.at-tr .card { grid-row: 1; align-self: end }
 .cell.at-bl .card, .cell.at-br .card { grid-row: 3; align-self: start }
 .cell.at-tl .card, .cell.at-bl .card { grid-column: 1; justify-self: end }
 .cell.at-tr .card, .cell.at-br .card { grid-column: 3; justify-self: start }
+.cell.at-tl .card { margin: 0 -32px -32px 0 }
+.cell.at-tr .card { margin: 0 0 -32px -32px }
+.cell.at-bl .card { margin: -32px -32px 0 0 }
+.cell.at-br .card { margin: -32px 0 0 -32px }
 
 /* ── a card ──────────────────────────────────────────────────────────── */
 .card {
   position: relative;
-  z-index: 1; /* above the heart's ripples, so the pulse passes beneath */
+  z-index: 1; /* above the core's ripples, so the pulse passes beneath */
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   gap: 0;
-  width: 100%;
-  max-width: 300px;
-  min-height: 150px;
-  padding: 22px;
-  text-align: left;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  padding: 0 28px;
+  text-align: center;
   text-decoration: none;
   font: inherit;
   color: inherit;
   cursor: pointer;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--r-card);
   box-shadow: var(--shadow);
   animation: settle 640ms var(--spring) both;
   transition: transform 280ms var(--spring), box-shadow 280ms, border-color 200ms;
@@ -314,10 +321,10 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   display: grid;
   place-items: center;
   width: 42px; height: 42px;
-  border-radius: 13px;
+  border-radius: 50%;
   background: var(--faint);
   color: var(--violet);
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 .card-guides .card-icon { background: #eef7fd; color: var(--cool) }
 .card-discord .card-icon { background: #eef1fe; color: #5865f2 }
@@ -326,22 +333,21 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .card-label {
   font-family: var(--display);
   font-weight: 600;
-  font-size: 18px;
+  font-size: 16.5px;
   letter-spacing: -.02em;
 }
 .card-blurb {
-  margin-top: 6px;
+  margin-top: 5px;
   color: var(--muted);
-  font-size: 13.5px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.45;
 }
 .card-go {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: auto;
-  padding-top: 14px;
-  font-size: 13px;
+  margin-top: 9px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--violet);
 }
@@ -674,32 +680,37 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
  */
 @media (max-width: 860px) {
   main { padding: 4px 18px 36px }
-  .hub { max-width: 520px; gap: 20px }
-  /* One column: the heart first, then the same four cards as thumb-high
-     rows. The cluster grid becomes a flex column - same elements, re-flowed. */
-  .cluster { display: flex; flex-direction: column; gap: 12px }
+  .hub { max-width: 400px; gap: 20px }
+  /* Full-width bars would break the circle language, so narrow screens get
+     the core on top and a two-by-two ring of smaller orbs - same elements,
+     re-flowed, still one-thumb targets at 158px each. */
+  .cluster {
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: none;
+    justify-content: center;
+    gap: 14px;
+  }
   .hub-heart {
+    grid-column: 1 / -1;
+    grid-row: auto;
     order: -1;
-    align-self: center;
-    margin-bottom: 8px;
-    width: 84px; height: 84px; border-radius: 22px;
+    justify-self: center;
+    margin-bottom: 4px;
+    width: 88px; height: 88px;
   }
   .hub-mark { width: 46px; height: 46px }
   .cell.at-tl .card, .cell.at-tr .card,
-  .cell.at-bl .card, .cell.at-br .card { align-self: stretch }
-  .card {
-    max-width: none;
-    min-height: 0;
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0 14px;
-    padding: 16px 18px;
+  .cell.at-bl .card, .cell.at-br .card {
+    grid-area: auto;
+    align-self: auto;
+    justify-self: center;
+    margin: 0;
   }
-  .card-icon { margin-bottom: 0; width: 40px; height: 40px }
-  .card-label { flex: 1 }
-  .card-blurb { flex-basis: 100%; margin-top: 6px }
-  .card-go { margin-top: 10px; padding-top: 0; flex-basis: 100% }
+  .card { width: 158px; height: 158px; padding: 0 18px }
+  .card-icon { width: 38px; height: 38px; margin-bottom: 8px }
+  .card-label { font-size: 14.5px }
+  .card-blurb { display: none }
+  .card-go { margin-top: 6px; font-size: 11.5px }
 
   .panel { width: calc(100vw - 20px); height: 88vh; border-radius: 18px }
   .panel-head { padding: 18px 18px 14px }

@@ -69,9 +69,11 @@ export function ExpandedResourcePanel({ root }) {
     const sx = Math.max(from.width / to.width, 0.05);
     const sy = Math.max(from.height / to.height, 0.05);
 
+    // The card is a circle, so the panel is born one and squares off as it
+    // grows - the orb becoming the sheet, not a sheet replacing an orb.
     return el.animate(
       [
-        { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: 0.35, borderRadius: "20px" },
+        { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: 0.35, borderRadius: "50%" },
         { transform: "none", opacity: 1, borderRadius: "22px" },
       ],
       { duration: OPEN_MS, easing: SPRING, fill: "both" },
@@ -118,11 +120,12 @@ export function ExpandedResourcePanel({ root }) {
 
     const flight = el.animate(
       [
-        { transform: "none", opacity: 1 },
+        { transform: "none", opacity: 1, borderRadius: "22px" },
         {
           transform: `translate(${from.left - to.left}px, ${from.top - to.top}px)
                       scale(${from.width / to.width}, ${from.height / to.height})`,
           opacity: 0.25,
+          borderRadius: "50%",
         },
       ],
       { duration: CLOSE_MS, easing: "cubic-bezier(.4, 0, .2, 1)", fill: "both" },

@@ -1,9 +1,9 @@
 /**
  * The middle of the page, in two pieces.
  *
- * The heart - the beating mark in its square - now lives inside the cluster
- * grid so the four cards can dock at its actual corners, so it is built apart
- * from the tagline and the ask button that sit below the whole cluster.
+ * The heart - the beating mark in its circle - lives inside the cluster grid
+ * so the four orbs can dock around it, and is built apart from the tagline
+ * and the ask button that sit below the whole cluster.
  *
  * The beat itself: two pumps and a long exhale, slow enough to read as
  * breathing rather than alarm. What leaves the box on each beat is a stroke
