@@ -97,6 +97,49 @@ export function Orbit({ mark, ways, onChoose }) {
 
   stage.append(ring, core, group);
 
+  /**
+   * Tell the ring how much room the page chrome is using.
+   *
+   * The header and the footer are ordinary flow content and the ring is a
+   * fixed layer, so nothing makes them aware of each other. Measuring both and
+   * writing the result in as variables is what keeps the composition inside
+   * the space that is actually free. It is measured rather than assumed
+   * because the footer wraps to two lines on a narrow screen, which is exactly
+   * where a hardcoded height would be wrong.
+   */
+  function fitChrome() {
+    const head = document.querySelector(".topbar");
+    const foot = document.querySelector(".foot");
+    const h = head ? Math.round(head.getBoundingClientRect().height) : 60;
+    const f = foot ? Math.round(foot.getBoundingClientRect().height) : 120;
+    stage.style.setProperty("--chrome-top", `${h}px`);
+    stage.style.setProperty("--chrome-bottom", `${f}px`);
+  }
+
+  // ResizeObserver rather than a resize listener: the footer can change height
+  // without the window changing size at all, when its text rewraps.
+  const watchChrome = () => {
+    fitChrome();
+    if (!("ResizeObserver" in window)) return;
+    const ro = new ResizeObserver(fitChrome);
+    for (const sel of [".topbar", ".foot"]) {
+      const el = document.querySelector(sel);
+      if (el) ro.observe(el);
+    }
+  };
+  /*
+   * Measured now, not on the next frame.
+   *
+   * This ran inside requestAnimationFrame, which does not fire at all while
+   * the tab is not being painted - a page opened in a background tab would
+   * have laid itself out against the fallback numbers and stayed there. The
+   * header and footer are already in the document by the time this runs, so
+   * reading them synchronously is both simpler and the version that always
+   * happens.
+   */
+  watchChrome();
+
+
   let active = null;
 
   /**
@@ -135,6 +178,15 @@ export function Orbit({ mark, ways, onChoose }) {
     }
   }
 
+  /** How far down the docked ring reaches, so a panel can start below it. */
+  function railBottom() {
+    const px = (n, fallback) => {
+      const v = parseFloat(getComputedStyle(stage).getPropertyValue(n));
+      return Number.isFinite(v) ? v : fallback;
+    };
+    return px("--chrome-top", 60) + 12 + px("--sat-docked", 56) + 16;
+  }
+
   /** Put the keyboard back where it came from, on the way in that was open. */
   function focusWay(id) {
     const b = buttons.find((x) => x.dataset.id === id);
@@ -145,7 +197,7 @@ export function Orbit({ mark, ways, onChoose }) {
   }
 
   return {
-    el: stage, core, choose, reset, focusWay,
+    el: stage, core, choose, reset, focusWay, railBottom,
     /** which way in is open, or null. Switching needs to tell being replaced
      *  apart from being closed, and only this can. */
     get active() { return active; },

@@ -160,6 +160,7 @@ export function SupportHub(root) {
     onChoose: (id, core) => {
       panel.show(wayFor(id), byId(id), (body, api) => render[id](body, api), {
         growFrom: core,
+        topInset: orbit.railBottom(),
         /**
          * Only go home if this panel was actually closed.
          *

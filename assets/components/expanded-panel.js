@@ -46,12 +46,20 @@ export function ExpandedResourcePanel({ root }) {
    * centre of the viewport - the FLIP still grows it out of whatever was
    * pressed, so the connection to the origin survives the move.
    */
-  function place(el) {
+  /**
+   * Centred in the room it actually has.
+   *
+   * `topInset` is whatever is parked above the panel and must stay reachable:
+   * on the orbital hub that is the docked ring, which is the way out of this
+   * panel and into the next one. Centring on the whole window put the panel
+   * underneath it, so the ways in were visible and unclickable.
+   */
+  function place(el, topInset = 0) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const { width: w, height: h } = el.getBoundingClientRect();
     el.style.left = Math.max(10, (vw - w) / 2) + "px";
-    el.style.top = Math.max(10, (vh - h) / 2) + "px";
+    el.style.top = topInset + Math.max(10, (vh - topInset - h) / 2) + "px";
   }
 
   /** Grow from the pressed element's rectangle to the panel's own. */
@@ -191,7 +199,7 @@ export function ExpandedResourcePanel({ root }) {
     // measures itself measures the real thing. Placement happens before the
     // FLIP measures its destination, or it would animate to the wrong spot.
     render(body, { close });
-    place(el);
+    place(el, opts.topInset ?? 0);
 
     const fromRadius = getComputedStyle(grower).borderRadius || "16px";
     requestAnimationFrame(() => scrim.classList.add("on"));

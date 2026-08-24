@@ -410,7 +410,16 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 
 .orbit {
   position: fixed;
-  inset: 0;
+  /* Between the chrome, not across it.
+     Centring on the viewport meant the composition did not know the header and
+     the footer existed, so the count line landed on top of the footer text.
+     The two ends are measured at runtime and written in as variables, because
+     a footer that wraps to two lines on a narrow screen is a different height
+     and a hardcoded guess would be wrong exactly there. */
+  top: var(--chrome-top, 60px);
+  bottom: var(--chrome-bottom, 120px);
+  left: 0;
+  right: 0;
   display: grid;
   place-items: center;
   /* The layer spans the viewport so the geometry is simple; only the round
@@ -525,7 +534,9 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 
 .orbit-count {
   margin: 0;
-  transform: translate(-50%, calc(var(--ring) + var(--sat) / 2 + 46px));
+  top: auto;
+  bottom: 2px;
+  transform: translateX(-50%);
   white-space: nowrap;
   font-size: 12.5px;
   color: var(--muted);
@@ -550,7 +561,13 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
     translate(-50%, -50%)
     translate(
       calc((var(--slot) - 1) * (var(--sat-docked) + 16px)),
-      calc(var(--sat-docked) / 2 + 16px - 50vh)
+      /* Sits just under the header. The layer starts below the header and is
+         centred in what is left, so reaching a point measured from the top of
+         the window means adding back half of both ends. */
+      calc(
+        12px + var(--sat-docked) / 2 - 50vh
+        + (var(--chrome-top, 60px) + var(--chrome-bottom, 120px)) / 2
+      )
     );
 }
 .orbit.is-open .sat .sat-label { opacity: 0 }
