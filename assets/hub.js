@@ -95,6 +95,21 @@ function openSupportChat() {
   return false;
 }
 
+/**
+ * Everything a reader can be shown, from both places it comes from.
+ *
+ * The knowledge base answers questions this team gets asked; the imported
+ * documentation explains how the product works. They are different kinds of
+ * writing and there is no point pretending otherwise, but a person searching
+ * "why is my AI not replying" wants whichever one answers it, so search and
+ * browsing run over the pair.
+ *
+ * The knowledge base goes first. Those entries were written in reply to a real
+ * customer, so where both cover the same ground it is the one that answers the
+ * question as asked.
+ */
+const allDocs = () => [...(window.DOCS || []), ...(window.DOCS_SITE || [])];
+
 export function SupportHub(root) {
   const panel = ExpandedResourcePanel({ root });
 
@@ -103,7 +118,7 @@ export function SupportHub(root) {
     onStuck: () => { panel.close(); openSupportChat(); },
   });
   const renderDocs = DocsPanel({
-    docs: window.DOCS || [],
+    docs: allDocs(),
     onAsk: () => { panel.close(); openSupportChat(); },
   });
 
@@ -126,7 +141,7 @@ export function SupportHub(root) {
     "Search the answers, or tell us what broke. We check your actual account, not a FAQ.";
 
   const search = SearchHero({
-    docs: window.DOCS || [],
+    docs: allDocs(),
     guides: window.WALKTHROUGHS || [],
     onOpenDoc: (doc, row) => openPanel("docs", row, { doc }),
     onOpenGuide: (guide, row) => openPanel("guides", row, { guide }),
@@ -134,7 +149,7 @@ export function SupportHub(root) {
   });
 
   // Counted from what is actually published, not claimed.
-  const docsAll = window.DOCS || [];
+  const docsAll = allDocs();
   const stats = document.createElement("div");
   stats.className = "stats";
   const groupsN = new Set(docsAll.map((d) => d.group)).size;
@@ -173,7 +188,7 @@ export function SupportHub(root) {
   feature.querySelector("#featureAsk").addEventListener("click", openSupportChat);
 
   // ── topics + community ────────────────────────────────────────────────
-  const docs = window.DOCS || [];
+  const docs = allDocs();
   const counts = {};
   docs.forEach((d) => (counts[d.group] = (counts[d.group] || 0) + 1));
   const topGroups = Object.entries(counts)

@@ -1,3 +1,6 @@
 !assets/steps/.gitkeep
 assets/steps/*.png
 assets/steps/raw/
+
+# Downloaded copies of docs.assistable.ai; re-fetched by scripts/import-docs.py.
+.docs-cache/

@@ -775,6 +775,107 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .doc-foot { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid var(--line);
   font-size: 13.5px; color: var(--muted) }
 
+/* ── imported documentation ──────────────────────────────────────────────
+   The docs site is written in MDX, so its pages arrive carrying steps,
+   callouts, cards and tables. These are the plainest shapes that keep what
+   each of those meant, in this page's own language rather than Mintlify's. */
+
+/* The page's own one-line summary, above its body. */
+.doc-lede {
+  margin: 0 0 16px; font-size: 15.5px; line-height: 1.6; color: var(--muted);
+}
+/* A claim we checked and could not confirm. Louder than the voice flag,
+   because that one is about wording and this one is about being wrong. */
+.doc-flag-hard {
+  background: #fff6f5; border-color: rgba(200, 60, 50, .28); color: #8c2f27;
+}
+.doc-src {
+  margin: 18px 0 0; font-size: 12.5px; color: var(--muted);
+}
+.doc-src a { color: var(--violet) }
+
+.doc-body h4, .doc-body h5, .doc-body h6 {
+  margin: 22px 0 8px; font-family: var(--display); font-weight: 600;
+  letter-spacing: -.015em; color: var(--ink); line-height: 1.35;
+}
+.doc-body h4 { font-size: 16px }
+.doc-body h5 { font-size: 14.5px }
+.doc-body h6 { font-size: 13.5px; color: var(--muted) }
+.doc-body ol { margin: 0 0 14px; padding-left: 20px }
+.doc-body a { color: var(--violet) }
+.doc-body img {
+  display: block; max-width: 100%; height: auto; margin: 14px 0;
+  border: 1px solid var(--line); border-radius: 12px;
+}
+.doc-body blockquote {
+  margin: 0 0 14px; padding: 2px 0 2px 14px; border-left: 2px solid var(--line-strong);
+  font-size: 14.5px; line-height: 1.65; color: var(--muted);
+}
+
+/* Steps, which is what most of these pages actually are. */
+.cx-steps { margin: 0 0 16px; padding-left: 20px; display: grid; gap: 10px }
+.cx-steps > li { line-height: 1.68 }
+.cx-steps > li > b { display: block; color: var(--ink); font-weight: 600; margin-bottom: 2px }
+
+/* Callouts. One accent, weight doing the rest, so a page of them still reads
+   as a page rather than as a set of warnings. */
+.cx {
+  margin: 0 0 14px; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--line-strong); background: var(--card-soft);
+  font-size: 14px; line-height: 1.62; color: var(--ink-2);
+}
+.cx > b {
+  display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+}
+.cx p:last-child { margin-bottom: 0 }
+.cx-tip { background: var(--accent-soft); border-color: rgba(0, 113, 235, .22) }
+.cx-tip > b { color: var(--violet) }
+.cx-warning { background: #fff8ee; border-color: rgba(190, 120, 20, .26) }
+.cx-warning > b { color: #8a5a12 }
+
+/* Related pages. Links first, so the group reads as somewhere to go next. */
+.cx-cards { display: grid; gap: 8px; margin: 0 0 16px }
+@media (min-width: 620px) { .cx-cards { grid-template-columns: 1fr 1fr } }
+.cx-card {
+  display: block; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--card);
+  text-decoration: none; transition: border-color .18s var(--spring);
+}
+a.cx-card:hover { border-color: var(--line-strong) }
+.cx-card > b { display: block; font-size: 14px; font-weight: 600; color: var(--ink) }
+.cx-card > span { display: block; margin-top: 3px; font-size: 13px; line-height: 1.55;
+  color: var(--muted) }
+/* A card with nowhere to go is not a link and must not look like one. */
+.cx-card.is-flat { background: var(--card-soft) }
+
+.cx-fold { margin: 0 0 12px; border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 14px; background: var(--card-soft) }
+.cx-fold > summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--ink) }
+.cx-fold[open] > summary { margin-bottom: 8px }
+.cx-tab { margin: 14px 0 6px; font-size: 12px; font-weight: 600; color: var(--muted) }
+
+.cx-code {
+  margin: 0 0 14px; padding: 13px 15px; border-radius: 12px; overflow-x: auto;
+  background: var(--ink); color: #f2f2f2;
+}
+.cx-code code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12.5px; line-height: 1.6; background: none; padding: 0; color: inherit }
+
+/* A wide table scrolls inside its own box; the page never scrolls sideways. */
+.cx-tablewrap { margin: 0 0 16px; overflow-x: auto; border: 1px solid var(--line);
+  border-radius: 12px }
+.cx-tablewrap table { border-collapse: collapse; width: 100%; font-size: 13.5px }
+.cx-tablewrap th, .cx-tablewrap td {
+  padding: 9px 13px; text-align: left; vertical-align: top; line-height: 1.55;
+  border-bottom: 1px solid var(--line);
+}
+.cx-tablewrap th { font-weight: 600; color: var(--ink); background: var(--card-soft);
+  white-space: nowrap }
+.cx-tablewrap td { color: var(--ink-2) }
+.cx-tablewrap tr:last-child td { border-bottom: 0 }
+
+
 .linkish {
   border: 0; background: none; font: inherit; font-weight: 600;
   color: var(--violet); cursor: pointer; padding: 0; text-decoration: underline;

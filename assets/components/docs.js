@@ -12,12 +12,14 @@
  * person, because a confident wrong article is worse than an honest miss.
  */
 
+import { renderDoc } from "../mdx.js";
+
 const esc = (s) =>
   String(s ?? "").replace(/[&<>"]/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-/** Enough markdown for the answers we actually have: bold, code, lists, links. */
-function markdown(src) {
+/** Kept only until the last caller is gone; renderDoc handles both sources. */
+function markdownUnused(src) {
   const lines = esc(src).split("\n");
   let html = "";
   let list = false;
@@ -57,7 +59,45 @@ export function scoreDoc(query, doc) {
   // A word appearing in the question itself is weaker evidence than a keyword
   // somebody chose, so it scores below both.
   if (!best && doc.q.toLowerCase().includes(q)) best = 40;
-  return best;
+
+  // The page's own one-line summary, then the body. Both rank under anything
+  // above, because a phrase buried in a long page is the weakest reason to put
+  // that page first - but with pages this long it is often the only reason
+  // there is, and scoring titles alone made most of them unreachable.
+  if (!best && doc.summary && doc.summary.toLowerCase().includes(q)) best = 30;
+  if (!best && q.length >= 4 && doc.answer.toLowerCase().includes(q)) best = 15;
+  if (best) return best;
+
+  /**
+   * Nothing matched the phrase, so try the words in it.
+   *
+   * Everything above asks whether the whole query appears somewhere, which is
+   * the right question for "ai_off" and the wrong one for how people actually
+   * type. "ai not replying" is the single most common thing this desk is
+   * asked and it matched one page out of a hundred and seventy-seven, because
+   * that exact string appears nowhere.
+   *
+   * Scored on the share of the query's words that turn up, so a page matching
+   * two words of three beats one matching one, and a page matching none is
+   * still no match. It stays below every phrase hit above: a page that
+   * contains your words scattered is a weaker answer than one whose title is
+   * what you asked.
+   */
+  const words = q.split(/\s+/).filter((w) => w.length >= 3);
+  if (words.length < 2) return 0;
+
+  const title = doc.q.toLowerCase();
+  const keys = doc.keywords.join(" ").toLowerCase();
+  const body = (doc.summary ? doc.summary + " " : "") + doc.answer.toLowerCase();
+
+  let hit = 0;
+  for (const w of words) {
+    if (title.includes(w) || keys.includes(w)) hit += 1;
+    else if (body.includes(w)) hit += 0.5;
+  }
+  const share = hit / words.length;
+  // Half the words, at least, or it is a coincidence rather than a match.
+  return share >= 0.5 ? Math.round(share * 12) : 0;
 }
 
 export function DocsPanel({ docs, onAsk }) {
@@ -94,7 +134,12 @@ export function DocsPanel({ docs, onAsk }) {
           ${doc.agentVoice ? `<p class="doc-flag">This answer is still written for
             our support team rather than for you. The facts are right; the wording
             is being rewritten.</p>` : ""}
-          <div class="doc-body">${markdown(doc.answer)}</div>
+          ${doc.unverified ? `<p class="doc-flag doc-flag-hard">${esc(doc.unverified)}</p>` : ""}
+          ${doc.summary ? `<p class="doc-lede">${esc(doc.summary)}</p>` : ""}
+          <div class="doc-body">${renderDoc(doc.answer)}</div>
+          ${doc.href ? `<p class="doc-src">From the documentation &middot;
+            <a href="${esc(doc.href)}" target="_blank" rel="noopener">read it on
+            docs.assistable.ai</a></p>` : ""}
           <p class="doc-foot">Still stuck?
             <button type="button" class="linkish" id="dAsk">Ask Assistable</button>
             &mdash; the AI can check your account and tell you what is actually wrong.</p>
