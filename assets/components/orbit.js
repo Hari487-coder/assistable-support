@@ -116,10 +116,20 @@ export function Orbit({ mark, ways, onChoose }) {
     stage.style.setProperty("--chrome-bottom", `${f}px`);
   }
 
-  // ResizeObserver rather than a resize listener: the footer can change height
-  // without the window changing size at all, when its text rewraps.
+  /**
+   * Three ways to stay current, because one of them is not enough.
+   *
+   * ResizeObserver catches the footer rewrapping without the window changing
+   * size, which a resize listener cannot see. But it is delivered as part of
+   * the rendering pipeline, so a window resized while the tab is not being
+   * painted leaves it holding the old numbers - measured happening, with the
+   * header at 71px and the ring still docking against 57. The resize listener
+   * covers that, and measuring again at the moment a way in is chosen means
+   * the one place the numbers actually matter never reads a stale one.
+   */
   const watchChrome = () => {
     fitChrome();
+    window.addEventListener("resize", fitChrome, { passive: true });
     if (!("ResizeObserver" in window)) return;
     const ro = new ResizeObserver(fitChrome);
     for (const sel of [".topbar", ".foot"]) {
@@ -152,6 +162,8 @@ export function Orbit({ mark, ways, onChoose }) {
    */
   function choose(id) {
     if (active === id) return;
+    // The rail is about to be placed against these, so read them now.
+    fitChrome();
     active = id;
     stage.classList.add("is-open");
     stage.dataset.active = id;
