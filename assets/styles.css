@@ -429,10 +429,15 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 
   --core: clamp(148px, 27vmin, 236px);
   --sat: clamp(72px, 12.5vmin, 104px);
-  --sat-docked: 56px;
   --ring: clamp(128px, 24vmin, 222px);
   --ease: cubic-bezier(.22, 1, .28, 1);
-  --travel: 620ms;
+  /* The same clock the panel flies on. They are one movement and were running
+     at different speeds, which is most of why the change of state read as two
+     things happening near each other rather than one thing happening. */
+  --travel: 460ms;
+  /* Docked size, expressed as a scale so nothing has to animate its box. */
+  --dock-scale: .62;
+  --dock: calc(var(--sat) * var(--dock-scale));
 }
 
 .orbit > *, .orbit-ways > * { position: absolute; left: 50%; top: 50% }
@@ -458,12 +463,27 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   place-items: center;
   gap: 10px;
   align-content: center;
-  background: var(--card);
-  border: 1px solid var(--line);
-  box-shadow: 0 18px 50px rgba(21, 21, 21, .07);
+  /* Deliberately not `position: relative`. This is a direct child of .orbit,
+     which places its children absolutely at 50%/50%; relative would turn that
+     placement into an offset from the grid slot and walk the mark off centre
+     while the ring carried on orbiting where the centre used to be. Absolute
+     is already a containing block for the sheen below. */
+  overflow: hidden;
+  /* Lit from the upper left, like everything else on the page. The gradient is
+     what makes it read as a ball rather than a disc; the two inset shadows are
+     the rim catching the light and the underside falling away from it. */
+  background:
+    radial-gradient(circle at 33% 27%,
+      #ffffff 0%, #fdfdfe 30%, #f2f4f8 62%, #e6e9f0 84%, #dde1ea 100%);
+  border: 1px solid rgba(21, 21, 21, .05);
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, .95),
+    inset 0 -14px 26px rgba(21, 21, 21, .045),
+    0 22px 54px rgba(21, 21, 21, .09);
   transform: translate(-50%, -50%);
   transition: transform var(--travel) var(--ease), opacity 280ms ease;
 }
+.core > * { position: relative; z-index: 1 }
 .core-mark { width: 34%; height: auto; display: block }
 .core-say {
   font-size: 12.5px;
@@ -485,11 +505,15 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   transform:
     translate(-50%, -50%)
     translate(calc(var(--dx) * var(--ring)), calc(var(--dy) * var(--ring)));
+  /* Transform and opacity, and nothing else.
+     Width and height were in here, and animating those is a layout pass on
+     every frame for four elements at once - which is what the opening was
+     stuttering on. The docked size is a scale now, so the same movement costs
+     the compositor a matrix and nothing else. */
   transition:
     transform var(--travel) var(--ease),
-    width var(--travel) var(--ease),
-    height var(--travel) var(--ease),
-    opacity 260ms ease;
+    opacity 240ms ease;
+  will-change: transform;
 }
 
 .sat-disc {
@@ -498,13 +522,23 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: var(--card);
-  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 33% 27%,
+      #ffffff 0%, #fdfdfe 32%, #f2f4f8 64%, #e6e9f0 86%, #dce0e9 100%);
+  border: 1px solid rgba(21, 21, 21, .05);
   color: var(--ink-2);
-  box-shadow: 0 10px 26px rgba(21, 21, 21, .06);
-  transition: border-color .2s var(--ease), color .2s var(--ease),
-              transform .2s var(--ease), box-shadow .2s var(--ease);
+  box-shadow:
+    inset 0 1.5px 2px rgba(255, 255, 255, .95),
+    inset 0 -9px 18px rgba(21, 21, 21, .05),
+    0 12px 28px rgba(21, 21, 21, .09);
+  transition: color .2s var(--ease), transform .2s var(--ease),
+              box-shadow .2s var(--ease);
 }
+/* The icon names the thing, so it stays upright and still while the surface
+   underneath it turns. A spinning label is a label nobody can read. */
+.sat-disc svg, .sat-disc > * { position: relative; z-index: 2 }
 .sat-disc svg { width: 40%; height: 40%; max-width: 30px; max-height: 30px }
 
 /* The label hangs off the disc rather than sitting in the flow, so adding a
@@ -522,10 +556,12 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 
 .sat:hover .sat-disc, .sat:focus-visible .sat-disc {
-  border-color: var(--brand);
   color: var(--brand);
   transform: translateY(-3px);
-  box-shadow: 0 16px 34px rgba(0, 113, 235, .16);
+  box-shadow:
+    inset 0 1.5px 2px rgba(255, 255, 255, .95),
+    inset 0 -9px 18px rgba(0, 113, 235, .07),
+    0 18px 38px rgba(0, 113, 235, .18);
 }
 .sat:active .sat-disc { transform: translateY(-1px) scale(.97) }
 .sat:hover .sat-label, .sat:focus-visible .sat-label { color: var(--brand) }
@@ -543,6 +579,43 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   transition: opacity 240ms ease;
 }
 
+/* The surface turning.
+   The highlight above is fixed, because the light does not move. What moves is
+   a soft band under it, and that is the only reason a plain sphere reads as
+   rotating at all: without something on the surface there is nothing for the
+   eye to track. Slow and low-contrast on purpose - this is a support page, and
+   a hard spin on four objects would be the loudest thing on it. */
+.sat-disc::after, .core::after {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  border-radius: 50%;
+  z-index: 1;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 255, 255, .85) 34deg,
+    transparent 96deg,
+    rgba(0, 113, 235, .05) 188deg,
+    transparent 250deg,
+    rgba(21, 21, 21, .022) 310deg,
+    transparent 360deg
+  );
+  animation: turn 18s linear infinite;
+}
+/* The middle is the slowest thing on the page, so the ring reads as moving
+   around something settled rather than everything spinning at once. */
+.core::after { inset: -18%; opacity: .7; animation-duration: 34s }
+
+/* Each one a little out of step with its neighbours, or four spheres turning
+   in lockstep read as one texture scrolling behind four holes. */
+.sat:nth-child(1) .sat-disc::after { animation-duration: 17s }
+.sat:nth-child(2) .sat-disc::after { animation-duration: 21s; animation-delay: -6s }
+.sat:nth-child(3) .sat-disc::after { animation-duration: 19s; animation-delay: -11s }
+.sat:nth-child(4) .sat-disc::after { animation-duration: 23s; animation-delay: -3s }
+
+@keyframes turn { to { transform: rotate(360deg) } }
+
 /* ── chosen ──────────────────────────────────────────────────────────────
    The one that was picked travels into the middle and fades as the panel
    grows out of the mark to meet it. The other three shrink and dock to the
@@ -553,22 +626,21 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .orbit.is-open .orbit-count { opacity: 0 }
 
 .orbit.is-open .sat {
-  width: var(--sat-docked);
-  height: var(--sat-docked);
   /* Docked row, centred on the viewport top. --slot is 0, 1, 2 in ring order,
      so a way in keeps the neighbours it had and nothing appears to shuffle. */
   transform:
     translate(-50%, -50%)
     translate(
-      calc((var(--slot) - 1) * (var(--sat-docked) + 16px)),
+      calc((var(--slot) - 1) * (var(--dock) + 16px)),
       /* Sits just under the header. The layer starts below the header and is
          centred in what is left, so reaching a point measured from the top of
          the window means adding back half of both ends. */
       calc(
-        12px + var(--sat-docked) / 2 - 50vh
+        12px + var(--dock) / 2 - 50vh
         + (var(--chrome-top, 60px) + var(--chrome-bottom, 120px)) / 2
       )
-    );
+    )
+    scale(var(--dock-scale));
 }
 .orbit.is-open .sat .sat-label { opacity: 0 }
 .orbit.is-open .sat-disc { box-shadow: 0 8px 22px rgba(21, 21, 21, .10) }
@@ -577,15 +649,14 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .orbit.is-open .orbit-ways { z-index: 45 }
 
 .orbit.is-open .sat.is-active {
-  width: var(--sat);
-  height: var(--sat);
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, -50%) scale(.4);
 }
 
 @media (max-width: 620px) {
-  .orbit { --sat-docked: 48px }
+  /* A shade larger, so the docked ring stays a comfortable target to tap. */
+  .orbit { --dock-scale: .67 }
   .sat-label { font-size: 12px; top: calc(100% + 7px) }
   .orbit-count { font-size: 11.5px }
 }
@@ -594,6 +665,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
    to a worse version of itself: it simply arrives. */
 @media (prefers-reduced-motion: reduce) {
   .orbit * { transition-duration: 1ms !important }
+  .sat-disc::after, .core::after { animation: none }
   .sat:hover .sat-disc, .sat:active .sat-disc { transform: none }
 }
 

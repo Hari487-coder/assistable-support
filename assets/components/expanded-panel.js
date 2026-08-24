@@ -84,7 +84,18 @@ export function ExpandedResourcePanel({ root }) {
     );
   }
 
-  function close() {
+  /**
+   * `instant` tears the panel down now instead of flying it home.
+   *
+   * Used when one panel is replacing another. The old panel used to keep
+   * flying back to the mark for 440ms while the new one was already growing
+   * out of it, so for most of half a second there were two panels and two
+   * scrims on screen, dimming each other and animating in opposite directions.
+   * That is what switching looked wrong doing. Going home is a movement worth
+   * animating; being replaced is not, and the thing arriving is the one the
+   * eye should be following.
+   */
+  function close(instant = false) {
     if (!open) return;
     const { el, scrim, card, grower, restoreTo, onKey, fromRadius, onClose } = open;
     const from = (grower ?? card).getBoundingClientRect();
@@ -123,7 +134,7 @@ export function ExpandedResourcePanel({ root }) {
 
     open = null;
 
-    if (stillness()) return done();
+    if (instant || stillness()) return done();
 
     const flight = el.animate(
       [
@@ -151,7 +162,8 @@ export function ExpandedResourcePanel({ root }) {
    * `opts.onClose` lets whatever opened the panel put itself back.
    */
   function show(resource, card, render, opts = {}) {
-    if (open) close();
+    // Replacing, not closing: no flight home, no second scrim.
+    if (open) close(true);
 
     const grower = opts.growFrom ?? card;
     const from = grower.getBoundingClientRect();

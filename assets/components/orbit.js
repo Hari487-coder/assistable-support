@@ -192,11 +192,16 @@ export function Orbit({ mark, ways, onChoose }) {
 
   /** How far down the docked ring reaches, so a panel can start below it. */
   function railBottom() {
-    const px = (n, fallback) => {
-      const v = parseFloat(getComputedStyle(stage).getPropertyValue(n));
+    const cssNum = (name, fallback) => {
+      const v = parseFloat(getComputedStyle(stage).getPropertyValue(name));
       return Number.isFinite(v) ? v : fallback;
     };
-    return px("--chrome-top", 60) + 12 + px("--sat-docked", 56) + 16;
+    // offsetWidth, not the bounding rect: the rect already has the docked
+    // scale baked into it, so measuring that and scaling it again would
+    // report a ring half the size of the one on screen.
+    const laidOut = buttons[0] ? buttons[0].offsetWidth : 90;
+    const docked = laidOut * cssNum("--dock-scale", 0.62);
+    return cssNum("--chrome-top", 60) + 12 + docked + 16;
   }
 
   /** Put the keyboard back where it came from, on the way in that was open. */
