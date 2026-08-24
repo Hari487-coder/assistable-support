@@ -97,16 +97,6 @@ body {
 /* ── the hub ─────────────────────────────────────────────────────────── */
 main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 
-.hub {
-  position: relative;
-  width: 100%;
-  max-width: 780px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-}
-
 /*
  * The cockpit. One column, one question, and the two ways of answering it
  * given equal billing: search for the generic, chat for the specific. The
@@ -122,15 +112,6 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   line-height: 1.1;
   text-align: center;
   animation: settle 560ms var(--spring) 90ms backwards;
-}
-.hero-sub {
-  margin: 14px 0 26px;
-  max-width: 46ch;
-  text-align: center;
-  font-size: 17px;
-  line-height: 1.55;
-  color: var(--muted);
-  animation: settle 560ms var(--spring) 130ms backwards;
 }
 
 /* ── search, the primary instrument ──────────────────────────────────── */
@@ -227,19 +208,6 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   margin-top: 18px;
   animation: settle 560ms var(--spring) 180ms backwards;
 }
-.stat { display: flex; flex-direction: column; gap: 2px; align-items: center }
-.stat b {
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -.02em;
-}
-.stat span {
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: .03em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
 
 /* ── quick help ──────────────────────────────────────────────────────── */
 .section-k {
@@ -252,33 +220,6 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   color: var(--muted);
   animation: settle 560ms var(--spring) 210ms backwards;
 }
-.tiles {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  width: 100%;
-  animation: settle 560ms var(--spring) 240ms backwards;
-}
-.tile {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0;
-  padding: 20px;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  background: var(--card-soft);
-  border: 1px solid var(--line);
-  border-radius: var(--r-card);
-  transition: border-color 160ms, background 160ms, transform 200ms var(--spring);
-}
-.tile:hover, .tile:focus-visible {
-  border-color: var(--line-strong);
-  background: var(--card);
-  transform: translateY(-2px);
-}
 /* Blue-soft chips, the brand's announcement treatment. */
 .tile-icon {
   flex: none;
@@ -290,18 +231,6 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   color: var(--violet);
   margin-bottom: 13px;
 }
-.tile-text { display: flex; flex-direction: column; gap: 4px; min-width: 0 }
-.tile-label {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 16.5px;
-  letter-spacing: -.015em;
-}
-.tile-blurb { font-size: 13.5px; color: var(--muted); line-height: 1.5 }
-.tile-arrow { margin-top: 12px; flex: none; color: var(--line-strong);
-  transition: transform 220ms var(--spring), color 180ms }
-.tile:hover .tile-arrow, .tile:focus-visible .tile-arrow {
-  transform: translateX(3px); color: var(--violet) }
 
 /* ── the filled panel: the brand's signature block ───────────────────── */
 .feature {
@@ -312,21 +241,6 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   border-radius: 24px;
   text-align: center;
   animation: settle 560ms var(--spring) 280ms backwards;
-}
-.feature h2 {
-  margin: 0 0 12px;
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(24px, 3.6vw, 32px);
-  letter-spacing: -.01em;
-  line-height: 1.15;
-}
-.feature p {
-  margin: 0 auto 22px;
-  max-width: 52ch;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--muted);
 }
 .btn-brand {
   font: inherit;
@@ -401,15 +315,6 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   box-shadow: var(--shadow);
   animation: heart-box 3.4s ease-in-out infinite;
 }
-.hub-heart::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: var(--shadow-lift);
-  opacity: 0;
-  animation: heart-shadow 3.4s ease-in-out infinite;
-}
 .hub-mark {
   width: 48px;
   height: 48px;
@@ -442,7 +347,6 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .hub-heart:hover .hub-mark,
 .hub-heart:hover .hub-pulse,
 .hub-heart:hover .hub-pulse::before { animation-duration: 2s }
-.hub-heart:hover .hub-pulse::before { animation-delay: .26s }
 
 @keyframes heart-mark {
   0%, 30%, 100% { transform: scale(1) }
@@ -485,6 +389,197 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 
 
 /* ── the panel a card becomes ────────────────────────────────────────── */
+/* ── the two panels that hand you somewhere ─────────────────────────────── */
+.chan { max-width: 56ch; display: grid; gap: 18px }
+.chan-lede { margin: 0; font-size: 15px; line-height: 1.65; color: var(--ink-2) }
+.chan-help { display: grid; gap: 8px }
+.chan-help h4 {
+  margin: 0; font-size: 12px; font-weight: 600; color: var(--muted);
+}
+.chan-help ul { margin: 0; padding-left: 18px; display: grid; gap: 5px }
+.chan-help li { font-size: 14px; line-height: 1.6; color: var(--ink-2) }
+.chan-go { justify-self: start; text-decoration: none; display: inline-block }
+.chan-foot { margin: 0; font-size: 13px; line-height: 1.6; color: var(--muted) }
+.chan-foot a { color: var(--brand) }
+
+/* ── the orbit ───────────────────────────────────────────────────────────
+   The mark in the middle, the four ways in around it. Everything is placed
+   from the centre of one fixed layer, because docking is then the same
+   transform with different numbers and the two states can animate into each
+   other. Two coordinate systems cannot be transitioned between. */
+
+.orbit {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  /* The layer spans the viewport so the geometry is simple; only the round
+     things in it are actually clickable, so the footer underneath still is. */
+  pointer-events: none;
+  z-index: 5;
+
+  --core: clamp(148px, 27vmin, 236px);
+  --sat: clamp(72px, 12.5vmin, 104px);
+  --sat-docked: 56px;
+  --ring: clamp(128px, 24vmin, 222px);
+  --ease: cubic-bezier(.22, 1, .28, 1);
+  --travel: 620ms;
+}
+
+.orbit > *, .orbit-ways > * { position: absolute; left: 50%; top: 50% }
+.orbit-ways { position: absolute; inset: 0 }
+
+/* The path the four sit on, drawn faintly so the arrangement reads as one
+   object rather than five loose circles. */
+.orbit-ring {
+  width: calc(var(--ring) * 2);
+  height: calc(var(--ring) * 2);
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity var(--travel) var(--ease), transform var(--travel) var(--ease);
+}
+
+.core {
+  width: var(--core);
+  height: var(--core);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  align-content: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 50px rgba(21, 21, 21, .07);
+  transform: translate(-50%, -50%);
+  transition: transform var(--travel) var(--ease), opacity 280ms ease;
+}
+.core-mark { width: 34%; height: auto; display: block }
+.core-say {
+  font-size: 12.5px;
+  color: var(--muted);
+  letter-spacing: -.01em;
+}
+
+.sat {
+  width: var(--sat);
+  height: var(--sat);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  /* Hub seat: a unit vector out from the centre, times the ring radius. */
+  transform:
+    translate(-50%, -50%)
+    translate(calc(var(--dx) * var(--ring)), calc(var(--dy) * var(--ring)));
+  transition:
+    transform var(--travel) var(--ease),
+    width var(--travel) var(--ease),
+    height var(--travel) var(--ease),
+    opacity 260ms ease;
+}
+
+.sat-disc {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  box-shadow: 0 10px 26px rgba(21, 21, 21, .06);
+  transition: border-color .2s var(--ease), color .2s var(--ease),
+              transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+.sat-disc svg { width: 40%; height: 40%; max-width: 30px; max-height: 30px }
+
+/* The label hangs off the disc rather than sitting in the flow, so adding a
+   word never changes where the circle is. */
+.sat-label {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+  transition: opacity 220ms ease, color .2s var(--ease);
+}
+
+.sat:hover .sat-disc, .sat:focus-visible .sat-disc {
+  border-color: var(--brand);
+  color: var(--brand);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(0, 113, 235, .16);
+}
+.sat:active .sat-disc { transform: translateY(-1px) scale(.97) }
+.sat:hover .sat-label, .sat:focus-visible .sat-label { color: var(--brand) }
+.sat:focus-visible { outline: none }
+.sat:focus-visible .sat-disc { outline: 2px solid var(--brand); outline-offset: 3px }
+
+.orbit-count {
+  margin: 0;
+  transform: translate(-50%, calc(var(--ring) + var(--sat) / 2 + 46px));
+  white-space: nowrap;
+  font-size: 12.5px;
+  color: var(--muted);
+  transition: opacity 240ms ease;
+}
+
+/* ── chosen ──────────────────────────────────────────────────────────────
+   The one that was picked travels into the middle and fades as the panel
+   grows out of the mark to meet it. The other three shrink and dock to the
+   top, where they stay live: switching is one click, not a trip home. */
+
+.orbit.is-open .orbit-ring { opacity: 0; transform: translate(-50%, -50%) scale(.82) }
+.orbit.is-open .core { opacity: 0; transform: translate(-50%, -50%) scale(1.18) }
+.orbit.is-open .orbit-count { opacity: 0 }
+
+.orbit.is-open .sat {
+  width: var(--sat-docked);
+  height: var(--sat-docked);
+  /* Docked row, centred on the viewport top. --slot is 0, 1, 2 in ring order,
+     so a way in keeps the neighbours it had and nothing appears to shuffle. */
+  transform:
+    translate(-50%, -50%)
+    translate(
+      calc((var(--slot) - 1) * (var(--sat-docked) + 16px)),
+      calc(var(--sat-docked) / 2 + 16px - 50vh)
+    );
+}
+.orbit.is-open .sat .sat-label { opacity: 0 }
+.orbit.is-open .sat-disc { box-shadow: 0 8px 22px rgba(21, 21, 21, .10) }
+
+/* Above the scrim, or the ways out would be behind the thing they switch. */
+.orbit.is-open .orbit-ways { z-index: 45 }
+
+.orbit.is-open .sat.is-active {
+  width: var(--sat);
+  height: var(--sat);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(.4);
+}
+
+@media (max-width: 620px) {
+  .orbit { --sat-docked: 48px }
+  .sat-label { font-size: 12px; top: calc(100% + 7px) }
+  .orbit-count { font-size: 11.5px }
+}
+
+/* Motion here is the whole idea, so under reduced motion it does not degrade
+   to a worse version of itself: it simply arrives. */
+@media (prefers-reduced-motion: reduce) {
+  .orbit * { transition-duration: 1ms !important }
+  .sat:hover .sat-disc, .sat:active .sat-disc { transform: none }
+}
+
 .scrim {
   position: fixed;
   inset: 0;
@@ -726,16 +821,6 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .docs-heading + .doc-list, .cats + .docs-heading { margin-top: 22px }
 
 .cats { display: flex; flex-wrap: wrap; gap: 8px }
-.cat {
-  display: inline-flex; align-items: center; gap: 7px;
-  font: inherit; font-size: 13.5px; font-weight: 600;
-  padding: 9px 15px; border-radius: 10px;
-  border: 0; background: var(--faint); color: var(--muted);
-  cursor: pointer;
-  transition: background 160ms, color 160ms, transform 180ms var(--spring);
-}
-.cat span { font-size: 11px; color: var(--muted) }
-.cat:hover { background: var(--accent-soft); color: var(--violet); transform: translateY(-1px) }
 
 .doc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px }
 .doc-row {
@@ -911,21 +996,15 @@ a.cx-card:hover { border-color: var(--line-strong) }
  */
 @media (max-width: 860px) {
   main { padding: 4px 18px 36px }
-  .hub { max-width: 460px }
-  .hub-heart { width: 78px; height: 78px }
   .hub-mark { width: 42px; height: 42px }
-  .hero-h1 { margin: 14px 0 0 }
-  .hero-sub { font-size: 15px }
   .searchbar input { font-size: 16px } /* under 16px iOS zooms the page */
   .tiles { grid-template-columns: 1fr }
-  .tile { flex-direction: row; align-items: center; gap: 13px; padding: 16px 18px }
-  .tile-icon { margin-bottom: 0 }
-  .tile-arrow { margin-top: 0; margin-left: auto }
-  .feature { padding: 34px 22px; border-radius: 20px }
-  .stats { gap: 26px }
   .hit-meta { display: none }
 
-  .panel { width: calc(100vw - 20px); height: 88vh; border-radius: 18px }
+  /* Short by the height of the docked ring, which now sits above every open
+     panel on this size. The panel is centred by measurement, so leaving the
+     room here is what keeps the ways in reachable instead of underneath it. */
+  .panel { width: calc(100vw - 20px); height: calc(88vh - 76px); border-radius: 18px }
   .panel-head { padding: 18px 18px 14px }
   .panel-body { padding: 16px 18px 22px }
   .panel-close span { display: none }

@@ -12,9 +12,8 @@
  * its launcher. What the widget says once open lives on the widget record
  * and the intake assistant's prompt, not in this file.
  */
-import { Heart, Community } from "./components/brand.js";
-import { QuickHelp } from "./components/resource-grid.js";
-import { SearchHero } from "./components/search.js";
+import { Orbit } from "./components/orbit.js";
+import { BotPanel, CommunityPanel } from "./components/channels.js";
 import { ExpandedResourcePanel } from "./components/expanded-panel.js";
 import { GuidesPanel } from "./components/guides.js";
 import { DocsPanel } from "./components/docs.js";
@@ -35,35 +34,57 @@ const ICONS = {
 };
 
 /**
- * INTERIM Discord destination. Every known invite is dead - discord.gg/Puse4ka7
- * (what support agents were sending customers) and discord.gg/HPqCJWZU (the
- * link on assistable.ai itself, broken for everyone) both return Unknown
- * Invite, and the guild widget is disabled so no invite can be minted from
- * outside. This is the server itself: members land in it; non-members need
- * the permanent invite only an admin can create. Swap the moment one exists.
+ * The community, and the link that finally works.
+ *
+ * Every invite this page has carried was dead: discord.gg/Puse4ka7, what
+ * support agents were sending customers, and discord.gg/HPqCJWZU, the link on
+ * assistable.ai itself. Both return Unknown Invite. The stand-in was the server
+ * URL, which only opens for somebody already inside it, so for a new customer
+ * it did nothing at all.
+ *
+ * This one is published in Assistable's own documentation and was checked
+ * against Discord before being used here. If it ever stops working, check it
+ * the same way rather than swapping in another guess.
  */
 const COMMUNITY = {
-  discord: "https://discord.com/channels/1495316624108945479",
+  discord: "https://discord.gg/5v4WSM3YwP",
   skool: "https://www.skool.com/assistable",
 };
 
-const TILES = [
+const ICON_COMMUNITY = `<svg viewBox="0 0 24 24" width="20" height="20">
+  <circle cx="9" cy="8" r="3.1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  <path d="M3.5 19a5.5 5.5 0 0 1 11 0" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round"/>
+  <path d="M16 5.4a3.1 3.1 0 0 1 0 5.2M17.6 14.2A5.5 5.5 0 0 1 20.5 19"
+        fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+
+/**
+ * The four ways in, clockwise from the top.
+ *
+ * Ordered by how many people need each one, not by how much we like it. Guides
+ * and answers carry almost everything; the chat is for when they do not; the
+ * community is where you go when you would rather ask a person.
+ */
+const WAYS = [
   {
-    id: "guides", corner: "tl", kind: "expand", icon: ICONS.guides,
-    label: "Guides",
-    blurb: "Learn how, with pictures of the real screens.",
+    id: "guides", icon: ICONS.guides,
+    label: "Visual guides",
     panelTitle: "Pictures of the real screens, with the button circled",
   },
   {
-    id: "docs", corner: "tl", kind: "expand", icon: ICONS.docs,
-    label: "Help docs",
-    blurb: "Answers to what people actually ask us.",
+    id: "docs", icon: ICONS.docs,
+    label: "Support docs",
     panelTitle: "Answers to what people actually ask us",
   },
   {
-    id: "ask", corner: "tr", kind: "chat", icon: ICONS.ask,
-    label: "Ask us",
-    blurb: "A question? Tell us. No forms, no queue.",
+    id: "bot", icon: ICONS.ask,
+    label: "Debugging bot",
+    panelTitle: "Tell us what broke, and it opens your account",
+  },
+  {
+    id: "community", icon: ICON_COMMUNITY,
+    label: "Community",
+    panelTitle: "Where people building on Assistable talk",
   },
 ];
 
@@ -113,102 +134,51 @@ const allDocs = () => [...(window.DOCS || []), ...(window.DOCS_SITE || [])];
 export function SupportHub(root) {
   const panel = ExpandedResourcePanel({ root });
 
-  const renderGuides = GuidesPanel({
-    guides: window.WALKTHROUGHS || [],
-    onStuck: () => { panel.close(); openSupportChat(); },
-  });
-  const renderDocs = DocsPanel({
-    docs: allDocs(),
-    onAsk: () => { panel.close(); openSupportChat(); },
-  });
+  const render = {
+    guides: GuidesPanel({
+      guides: window.WALKTHROUGHS || [],
+      onStuck: () => { panel.close(); openSupportChat(); },
+    }),
+    docs: DocsPanel({
+      docs: allDocs(),
+      onAsk: () => { panel.close(); openSupportChat(); },
+    }),
+    bot: BotPanel({ onOpenChat: () => { panel.close(); openSupportChat(); } }),
+    community: CommunityPanel(COMMUNITY),
+  };
 
-  const tileFor = (id) => TILES.find((t) => t.id === id);
-  function openPanel(id, origin, start) {
-    const renderer = id === "guides" ? renderGuides : renderDocs;
-    panel.show(tileFor(id), origin, (body, api) => renderer(body, api, start));
-  }
+  const wayFor = (id) => WAYS.find((w) => w.id === id);
 
-  // ── hero: the brand site's type-led opening, with our one signature ────
-  const heart = Heart({ mark: "assets/brand/assistable-mark.png" });
-
-  const h1 = document.createElement("h1");
-  h1.className = "hero-h1";
-  h1.textContent = "How can we help?";
-
-  const sub = document.createElement("p");
-  sub.className = "hero-sub";
-  sub.textContent =
-    "Search the answers, or tell us what broke. We check your actual account, not a FAQ.";
-
-  const search = SearchHero({
-    docs: allDocs(),
-    guides: window.WALKTHROUGHS || [],
-    onOpenDoc: (doc, row) => openPanel("docs", row, { doc }),
-    onOpenGuide: (guide, row) => openPanel("guides", row, { guide }),
-    onAsk: openSupportChat,
-  });
-
-  // Counted from what is actually published, not claimed.
-  const docsAll = allDocs();
-  const stats = document.createElement("div");
-  stats.className = "stats";
-  const groupsN = new Set(docsAll.map((d) => d.group)).size;
-  for (const [n, label] of [
-    [docsAll.length, "Answers"],
-    [groupsN, "Topics"],
-    [(window.WALKTHROUGHS || []).length, "Guides"],
-  ]) {
-    const el = document.createElement("span");
-    el.className = "stat";
-    el.innerHTML = `<b>${n}</b><span>${label}</span>`;
-    stats.appendChild(el);
-  }
-
-  // ── self-serve row ──────────────────────────────────────────────────
-  const quickHead = document.createElement("p");
-  quickHead.className = "section-k";
-  quickHead.textContent = "Quick help";
-
-  const tiles = QuickHelp({
-    tiles: TILES,
-    onOpen: (resource, el) =>
-      resource.kind === "expand" ? openPanel(resource.id, el) : openSupportChat(),
+  const orbit = Orbit({
+    mark: "assets/brand/assistable-mark.png",
+    ways: WAYS,
+    /**
+     * The panel grows out of the mark, not out of the button that was pressed.
+     * That is the whole illusion: the centre becomes the thing you chose, while
+     * the thing you chose travels in to meet it.
+     */
+    onChoose: (id, core) => {
+      panel.show(wayFor(id), byId(id), (body, api) => render[id](body, api), {
+        growFrom: core,
+        /**
+         * Only go home if this panel was actually closed.
+         *
+         * Choosing a second way in opens its panel, which closes the first
+         * one on the way past. That close used to fire this and send the ring
+         * back to the hub a frame after it had opened, so switching looked
+         * right (the new panel was there) while the circles quietly sat in
+         * their hub seats behind it. Being replaced is not being closed.
+         */
+        onClose: () => {
+          if (orbit.active !== id) return;
+          orbit.reset();
+          orbit.focusWay(id);
+        },
+      });
+    },
   });
 
-  // ── the filled panel: the brand site's signature block, spent on the ──
-  //    one thing that makes this desk different.
-  const feature = document.createElement("section");
-  feature.className = "feature";
-  feature.innerHTML = `
-    <h2>Something broken?<br>We check your real account.</h2>
-    <p>Tell us what happened. The AI opens your actual configuration, finds
-       what is wrong, shows you the evidence, and only changes anything after
-       you say yes. Every fix is verified by a real engineer.</p>
-    <button type="button" class="btn-brand" id="featureAsk">Tell us what happened</button>`;
-  feature.querySelector("#featureAsk").addEventListener("click", openSupportChat);
-
-  // ── topics + community ────────────────────────────────────────────────
-  const docs = allDocs();
-  const counts = {};
-  docs.forEach((d) => (counts[d.group] = (counts[d.group] || 0) + 1));
-  const topGroups = Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
-
-  const topicsHead = document.createElement("p");
-  topicsHead.className = "section-k";
-  topicsHead.textContent = "Popular topics";
-
-  const topics = document.createElement("div");
-  topics.className = "topics";
-  topGroups.forEach(([g, n]) => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "cat";
-    b.innerHTML = `${g}<span>${n}</span>`;
-    b.addEventListener("click", () => openPanel("docs", b, { group: g }));
-    topics.appendChild(b);
-  });
+  const byId = (id) => orbit.el.querySelector(`.sat[data-id="${id}"]`);
 
   const note = document.createElement("p");
   note.className = "hub-note";
@@ -216,10 +186,19 @@ export function SupportHub(root) {
   note.hidden = true;
   note.setAttribute("role", "status");
 
-  const stage = document.createElement("div");
-  stage.className = "hub";
-  stage.append(heart, h1, sub, search, stats, quickHead, tiles, feature,
-               topicsHead, topics, Community(COMMUNITY), note);
-  root.append(stage);
-  return { openSupportChat };
+  root.append(orbit.el, note);
+
+  /**
+   * Counted from what is published, never claimed. The line sits under the
+   * ring rather than inside it, so the centre stays the mark.
+   */
+  const docsAll = allDocs();
+  const count = document.createElement("p");
+  count.className = "orbit-count";
+  count.textContent =
+    `${docsAll.length} answers, ${new Set(docsAll.map((d) => d.group)).size} topics, ` +
+    `${(window.WALKTHROUGHS || []).length} guide${(window.WALKTHROUGHS || []).length === 1 ? "" : "s"}`;
+  orbit.el.appendChild(count);
+
+  return { openSupportChat, orbit };
 }

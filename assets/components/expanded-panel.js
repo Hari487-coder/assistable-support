@@ -78,8 +78,8 @@ export function ExpandedResourcePanel({ root }) {
 
   function close() {
     if (!open) return;
-    const { el, scrim, card, restoreTo, onKey, fromRadius } = open;
-    const from = card.getBoundingClientRect();
+    const { el, scrim, card, grower, restoreTo, onKey, fromRadius, onClose } = open;
+    const from = (grower ?? card).getBoundingClientRect();
     const to = el.getBoundingClientRect();
 
     document.removeEventListener("keydown", onKey, true);
@@ -107,7 +107,10 @@ export function ExpandedResourcePanel({ root }) {
       scrim.remove();
       // Back to the card that opened it, so a keyboard user resumes where they
       // were rather than at the top of the document.
-      if (restoreTo && document.contains(restoreTo)) restoreTo.focus();
+      // The caller goes first: it may want to move focus somewhere better than
+      // the control that opened this, and it cannot once focus has landed.
+      if (onClose) onClose();
+      else if (restoreTo && document.contains(restoreTo)) restoreTo.focus();
     };
 
     open = null;
@@ -131,10 +134,19 @@ export function ExpandedResourcePanel({ root }) {
     setTimeout(done, CLOSE_MS + 120);
   }
 
-  function show(resource, card, render) {
+  /**
+   * `card` is the control that opened this: it carries `aria-expanded` and it
+   * gets the keyboard back on close. `opts.growFrom` is the rectangle the panel
+   * flies out of, which is not always the same element - the orbital hub opens
+   * from a button on the ring but grows out of the mark in the middle, so the
+   * centre reads as becoming the thing rather than a dialog arriving over it.
+   * `opts.onClose` lets whatever opened the panel put itself back.
+   */
+  function show(resource, card, render, opts = {}) {
     if (open) close();
 
-    const from = card.getBoundingClientRect();
+    const grower = opts.growFrom ?? card;
+    const from = grower.getBoundingClientRect();
 
     const scrim = document.createElement("div");
     scrim.className = "scrim";
@@ -181,7 +193,7 @@ export function ExpandedResourcePanel({ root }) {
     render(body, { close });
     place(el);
 
-    const fromRadius = getComputedStyle(card).borderRadius || "16px";
+    const fromRadius = getComputedStyle(grower).borderRadius || "16px";
     requestAnimationFrame(() => scrim.classList.add("on"));
     flip(el, from, fromRadius);
 
@@ -210,7 +222,8 @@ export function ExpandedResourcePanel({ root }) {
     };
     document.addEventListener("keydown", onKey, true);
 
-    open = { resource, card, el, scrim, restoreTo: card, onKey, fromRadius };
+    open = { resource, card, grower, el, scrim, restoreTo: card, onKey, fromRadius,
+             onClose: opts.onClose };
 
     // Into the panel, on the first thing worth reaching rather than the close
     // button - landing on Close reads as "the way out is the main action".
