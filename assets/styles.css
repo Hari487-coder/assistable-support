@@ -558,10 +558,13 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 .sat:hover .sat-disc, .sat:focus-visible .sat-disc {
   color: var(--brand);
   transform: translateY(-3px);
+  /* Hover lights the ball. The inner glow was at seven percent, which is the
+     same mistake the meridians made: present in the file, invisible on screen.
+     It reads now. */
   box-shadow:
     inset 0 1.5px 2px rgba(255, 255, 255, .95),
-    inset 0 -9px 18px rgba(0, 113, 235, .07),
-    0 18px 38px rgba(0, 113, 235, .18);
+    inset 0 -12px 22px rgba(0, 113, 235, .22),
+    0 18px 40px rgba(0, 113, 235, .26);
 }
 .sat:active .sat-disc { transform: translateY(-1px) scale(.97) }
 .sat:hover .sat-label, .sat:focus-visible .sat-label { color: var(--brand) }
@@ -601,15 +604,21 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   left: 0;
   width: 200%;
   z-index: 1;
+  /* Meridians in light and shadow only.
+     These were tinted blue at seven percent, which over a white ball is not a
+     colour, it is a smudge: too weak to read as blue and strong enough to grey
+     the whole surface. Neutral bands cannot muddy anything, and they take the
+     contrast they need to actually be seen turning. The brand colour moved to
+     the dome below, where it sits at a strength that reads as light. */
   background: repeating-linear-gradient(
-    102deg,
-    rgba(0, 113, 235, 0) 0 9px,
-    rgba(0, 113, 235, .07) 9px 15px,
-    rgba(0, 113, 235, 0) 15px 21px,
-    rgba(21, 21, 21, .035) 21px 25px,
-    rgba(0, 113, 235, 0) 25px 38px
+    96deg,
+    rgba(21, 21, 21, 0) 0 5px,
+    rgba(21, 21, 21, .16) 5px 11px,
+    rgba(255, 255, 255, .55) 11px 14px,
+    rgba(21, 21, 21, .07) 14px 20px,
+    rgba(21, 21, 21, 0) 20px 30px
   );
-  animation: surface 11s linear infinite;
+  animation: surface 5s linear infinite;
   will-change: transform;
 }
 
@@ -623,23 +632,31 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   z-index: 2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 31% 25%,
-      rgba(255, 255, 255, .96) 0%, rgba(255, 255, 255, .55) 18%,
-      rgba(255, 255, 255, 0) 44%),
-    radial-gradient(circle at 70% 78%,
-      rgba(21, 21, 21, .11) 0%, rgba(21, 21, 21, .04) 34%, transparent 60%);
+    /* the hot spot where the lamp hits */
+    radial-gradient(circle at 30% 24%,
+      rgba(255, 255, 255, .98) 0%, rgba(255, 255, 255, .62) 15%,
+      rgba(255, 255, 255, 0) 42%),
+    /* light bouncing back off the surface it is sitting on, in the brand
+       colour. Blue belongs in the bounce rather than in the meridians: it is
+       saturated enough here to read as light instead of dirt, and it is the
+       only place on the ball where a colour makes physical sense. */
+    radial-gradient(circle at 76% 82%,
+      rgba(0, 113, 235, .30) 0%, rgba(0, 113, 235, .10) 26%, transparent 54%),
+    /* and the side turned away from the lamp */
+    radial-gradient(circle at 66% 74%,
+      rgba(21, 21, 21, .13) 0%, rgba(21, 21, 21, .05) 32%, transparent 62%);
 }
 
 /* The middle turns slowest, so the ring reads as moving around something
    settled rather than five things spinning at once. */
-.core::before { animation-duration: 26s; opacity: .75 }
+.core::before { animation-duration: 11s; opacity: .8 }
 
 /* Each a little out of step, or four balls in lockstep read as one sheet of
    texture sliding behind four holes. */
-.sat:nth-child(1) .sat-disc::before { animation-duration: 10s }
-.sat:nth-child(2) .sat-disc::before { animation-duration: 13s; animation-delay: -4s }
-.sat:nth-child(3) .sat-disc::before { animation-duration: 11.5s; animation-delay: -7s }
-.sat:nth-child(4) .sat-disc::before { animation-duration: 14s; animation-delay: -2s }
+.sat:nth-child(1) .sat-disc::before { animation-duration: 4.4s }
+.sat:nth-child(2) .sat-disc::before { animation-duration: 5.6s; animation-delay: -1.8s }
+.sat:nth-child(3) .sat-disc::before { animation-duration: 4.9s; animation-delay: -3.1s }
+.sat:nth-child(4) .sat-disc::before { animation-duration: 6.1s; animation-delay: -0.9s }
 
 /* Half the width, so the loop is seamless. */
 @keyframes surface { to { transform: translateX(-50%) } }
