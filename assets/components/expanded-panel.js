@@ -207,14 +207,25 @@ export function ExpandedResourcePanel({ root }) {
     el.append(head, body);
     document.body.append(scrim, el);
 
-    // Content is rendered after the panel is in the document, so anything that
-    // measures itself measures the real thing. Placement happens before the
-    // FLIP measures its destination, or it would animate to the wrong spot.
-    render(body, { close });
+    /**
+     * Move first, fill second.
+     *
+     * Content used to be built before the flight started, and building it is
+     * the expensive part: measured at 110ms to 290ms of blocked main thread
+     * depending on the panel. Nothing can paint while that runs, so the ring
+     * had already been told to move and simply sat there until it finished.
+     * That pause, then everything arriving at once, is what read as a glitch.
+     *
+     * The panel does not need its content to know where it is going. Its width
+     * and height come from CSS and do not depend on what is inside, so it can
+     * be placed and launched on the click itself. The flight animates transform
+     * and opacity, so once started it belongs to the compositor and keeps
+     * running smoothly even while the main thread is busy building the inside.
+     */
     place(el, opts.topInset ?? 0);
 
     const fromRadius = getComputedStyle(grower).borderRadius || "16px";
-    requestAnimationFrame(() => scrim.classList.add("on"));
+    scrim.classList.add("on");
     flip(el, from, fromRadius);
 
     card.setAttribute("aria-expanded", "true");
@@ -245,10 +256,28 @@ export function ExpandedResourcePanel({ root }) {
     open = { resource, card, grower, el, scrim, restoreTo: card, onKey, fromRadius,
              onClose: opts.onClose };
 
-    // Into the panel, on the first thing worth reaching rather than the close
-    // button - landing on Close reads as "the way out is the main action".
-    const target = focusables(body)[0] || el;
-    target.focus({ preventScroll: true });
+    /**
+     * The inside arrives on the next frame, once the box is already moving.
+     *
+     * Guarded so it happens exactly once and always: requestAnimationFrame is
+     * the one that lands on a real frame boundary, and it does not fire at all
+     * in a tab that is not being painted, so a timer runs behind it. Same
+     * contract the teardown uses - the frame is the nice path, the timer is
+     * the promise.
+     */
+    let filled = false;
+    const fill = () => {
+      if (filled || open?.el !== el) return;
+      filled = true;
+      render(body, { close });
+      // Focus goes in after there is something to focus. Landing on the close
+      // button would read as "the way out is the main action", so it is the
+      // first thing worth reaching instead.
+      const target = focusables(body)[0] || el;
+      target.focus({ preventScroll: true });
+    };
+    requestAnimationFrame(fill);
+    setTimeout(fill, 48);
   }
 
   return { show, close, get isOpen() { return Boolean(open); } };

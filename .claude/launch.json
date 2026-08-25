@@ -4,7 +4,10 @@
     {
       "name": "support-page",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "4321"],
+      "runtimeArgs": [
+        "scripts/devserver.py",
+        "4321"
+      ],
       "port": 4321
     }
   ]

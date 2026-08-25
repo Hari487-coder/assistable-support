@@ -483,7 +483,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
   transform: translate(-50%, -50%);
   transition: transform var(--travel) var(--ease), opacity 280ms ease;
 }
-.core > * { position: relative; z-index: 1 }
+.core > * { position: relative; z-index: 3 }
 .core-mark { width: 34%; height: auto; display: block }
 .core-say {
   font-size: 12.5px;
@@ -538,7 +538,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 /* The icon names the thing, so it stays upright and still while the surface
    underneath it turns. A spinning label is a label nobody can read. */
-.sat-disc svg, .sat-disc > * { position: relative; z-index: 2 }
+.sat-disc svg, .sat-disc > * { position: relative; z-index: 3 }
 .sat-disc svg { width: 40%; height: 40%; max-width: 30px; max-height: 30px }
 
 /* The label hangs off the disc rather than sitting in the flow, so adding a
@@ -580,41 +580,69 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
 }
 
 /* The surface turning.
-   The highlight above is fixed, because the light does not move. What moves is
-   a soft band under it, and that is the only reason a plain sphere reads as
-   rotating at all: without something on the surface there is nothing for the
-   eye to track. Slow and low-contrast on purpose - this is a support page, and
-   a hard spin on four objects would be the loudest thing on it. */
+ *
+ * Two layers doing two jobs. Underneath, a band of soft meridians twice the
+ * width of the ball, sliding sideways: that is the only thing the eye can
+ * actually track, because a smooth sphere gives rotation nothing to show. On
+ * top, a fixed dome - a specular highlight at the upper left and the ground
+ * shadow opposite - which does not move, because the light does not move.
+ * Together they read as a ball turning under a lamp rather than a texture
+ * scrolling behind a hole.
+ *
+ * The moving layer is translated, never repainted. An earlier version animated
+ * a rotating conic gradient, which cannot be composited and cost about seventy
+ * milliseconds of main thread every time a panel opened. This one is a matrix
+ * on its own layer and costs nothing measurable. */
+.sat-disc::before, .core::before {
+  content: "";
+  position: absolute;
+  top: -2%;
+  bottom: -2%;
+  left: 0;
+  width: 200%;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    102deg,
+    rgba(0, 113, 235, 0) 0 9px,
+    rgba(0, 113, 235, .07) 9px 15px,
+    rgba(0, 113, 235, 0) 15px 21px,
+    rgba(21, 21, 21, .035) 21px 25px,
+    rgba(0, 113, 235, 0) 25px 38px
+  );
+  animation: surface 11s linear infinite;
+  will-change: transform;
+}
+
+/* The dome. Static, and above the meridians so the highlight stays put while
+   they pass under it. */
 .sat-disc::after, .core::after {
   content: "";
   position: absolute;
-  inset: -25%;
+  inset: 0;
   border-radius: 50%;
-  z-index: 1;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(255, 255, 255, .85) 34deg,
-    transparent 96deg,
-    rgba(0, 113, 235, .05) 188deg,
-    transparent 250deg,
-    rgba(21, 21, 21, .022) 310deg,
-    transparent 360deg
-  );
-  animation: turn 18s linear infinite;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 31% 25%,
+      rgba(255, 255, 255, .96) 0%, rgba(255, 255, 255, .55) 18%,
+      rgba(255, 255, 255, 0) 44%),
+    radial-gradient(circle at 70% 78%,
+      rgba(21, 21, 21, .11) 0%, rgba(21, 21, 21, .04) 34%, transparent 60%);
 }
-/* The middle is the slowest thing on the page, so the ring reads as moving
-   around something settled rather than everything spinning at once. */
-.core::after { inset: -18%; opacity: .7; animation-duration: 34s }
 
-/* Each one a little out of step with its neighbours, or four spheres turning
-   in lockstep read as one texture scrolling behind four holes. */
-.sat:nth-child(1) .sat-disc::after { animation-duration: 17s }
-.sat:nth-child(2) .sat-disc::after { animation-duration: 21s; animation-delay: -6s }
-.sat:nth-child(3) .sat-disc::after { animation-duration: 19s; animation-delay: -11s }
-.sat:nth-child(4) .sat-disc::after { animation-duration: 23s; animation-delay: -3s }
+/* The middle turns slowest, so the ring reads as moving around something
+   settled rather than five things spinning at once. */
+.core::before { animation-duration: 26s; opacity: .75 }
 
-@keyframes turn { to { transform: rotate(360deg) } }
+/* Each a little out of step, or four balls in lockstep read as one sheet of
+   texture sliding behind four holes. */
+.sat:nth-child(1) .sat-disc::before { animation-duration: 10s }
+.sat:nth-child(2) .sat-disc::before { animation-duration: 13s; animation-delay: -4s }
+.sat:nth-child(3) .sat-disc::before { animation-duration: 11.5s; animation-delay: -7s }
+.sat:nth-child(4) .sat-disc::before { animation-duration: 14s; animation-delay: -2s }
+
+/* Half the width, so the loop is seamless. */
+@keyframes surface { to { transform: translateX(-50%) } }
 
 /* ── chosen ──────────────────────────────────────────────────────────────
    The one that was picked travels into the middle and fades as the panel
@@ -665,7 +693,7 @@ main { flex: 1; display: grid; place-items: center; padding: 12px 24px 44px }
    to a worse version of itself: it simply arrives. */
 @media (prefers-reduced-motion: reduce) {
   .orbit * { transition-duration: 1ms !important }
-  .sat-disc::after, .core::after { animation: none }
+  .sat-disc::before, .core::before { animation: none }
   .sat:hover .sat-disc, .sat:active .sat-disc { transform: none }
 }
 
