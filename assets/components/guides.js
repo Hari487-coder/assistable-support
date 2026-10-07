@@ -138,7 +138,7 @@ function player(host, guide, { onBack, onStuck }) {
 function shelf(host, guides, open) {
   if (!guides.length) {
     host.innerHTML = `<p class="empty asm asm-b" style="--i:1">No guides published
-      yet. The chat below can still get you to a person.</p>`;
+      yet. Email support below can still get you to a person.</p>`;
     return;
   }
   host.innerHTML = `<div class="shelf"></div>`;

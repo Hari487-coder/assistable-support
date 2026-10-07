@@ -4,16 +4,11 @@
  * Reverse-engineered from the live brand site rather than approximated:
  * Inter with big tight bold headlines, solid #0071eb actions, flat bordered
  * cards at 20px, and the signature filled grey panel at 24px - which this
- * page spends on the one thing that makes this desk different: tell us what
- * broke, and we check your real account.
- *
- * The chat widget itself is deliberately untouched. It is the route that
- * ends with an engineer inside the customer's account; the hub only borrows
- * its launcher. What the widget says once open lives on the widget record
- * and the intake assistant's prompt, not in this file.
+ * page spends on the support route: tell us what happened, and the request
+ * goes to the Assistable support team.
  */
 import { Orbit } from "./components/orbit.js";
-import { BotPanel, CommunityPanel } from "./components/channels.js";
+import { SupportPanel, CommunityPanel } from "./components/channels.js";
 import { ExpandedResourcePanel } from "./components/expanded-panel.js";
 import { GuidesPanel } from "./components/guides.js";
 import { DocsPanel } from "./components/docs.js";
@@ -32,6 +27,18 @@ const ICONS = {
           fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
     <path d="M9 8.5h6M9 11.5h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
 };
+
+const SUPPORT_INTAKE = "52feed97d498@intake.linear.app";
+const SUPPORT_BODY = [
+  "Account email:",
+  "Assistant or sub-account (if applicable):",
+  "What happened?",
+  "What did you expect instead?",
+  "When did it happen?",
+  "",
+  "Please do not include passwords, API keys, or other secrets.",
+].join("\n");
+const SUPPORT_MAILTO = `mailto:${SUPPORT_INTAKE}?subject=${encodeURIComponent("Assistable support request")}&body=${encodeURIComponent(SUPPORT_BODY)}`;
 
 /**
  * The community, and the link that finally works.
@@ -62,7 +69,7 @@ const ICON_COMMUNITY = `<svg viewBox="0 0 24 24" width="20" height="20">
  * The four ways in, clockwise from the top.
  *
  * Ordered by how many people need each one, not by how much we like it. Guides
- * and answers carry almost everything; the chat is for when they do not; the
+ * and answers carry almost everything; email support is for when they do not;
  * community is where you go when you would rather ask a person.
  */
 const WAYS = [
@@ -77,9 +84,9 @@ const WAYS = [
     panelTitle: "Answers to what people actually ask us",
   },
   {
-    id: "bot", icon: ICONS.ask,
-    label: "Debugging bot",
-    panelTitle: "Tell us what broke, and it opens your account",
+    id: "support", icon: ICONS.ask,
+    label: "Email support",
+    panelTitle: "Tell us what happened, and our team will help",
   },
   {
     id: "community", icon: ICON_COMMUNITY,
@@ -89,31 +96,18 @@ const WAYS = [
 ];
 
 /**
- * Open the support chat by clicking the widget's own launcher inside its
- * shadow root. Targeted by label: a bare "button" selector picks up the
- * teaser toast's close button whenever a teaser is showing, which dismisses
- * the toast and leaves the chat shut - a real bug in an earlier build.
+ * Open a prefilled message to the verified Linear support intake. Replies
+ * arrive from Assistable Support and remain on the same email thread.
  */
-function openSupportChat() {
-  const api = window.__assistableWidget;
-  const shadow = api && api.shadow;
-  const launcher =
-    (shadow &&
-      (shadow.querySelector('button[aria-label="Open chat"]') ||
-        shadow.querySelector("button[aria-label*='chat' i]"))) ||
-    document.querySelector('#assistable-chat-widget button[aria-label*="chat" i]');
-
-  if (launcher) {
-    launcher.click();
-    return true;
-  }
+function openSupportRequest() {
+  window.location.href = SUPPORT_MAILTO;
   const note = document.getElementById("hubNote");
   if (note) {
-    note.textContent = "The support chat is still loading. Give it a moment and try again.";
+    note.textContent = `If your email app did not open, send your message to ${SUPPORT_INTAKE}.`;
     note.hidden = false;
-    setTimeout(() => { note.hidden = true; }, 6000);
+    setTimeout(() => { note.hidden = true; }, 8000);
   }
-  return false;
+  return true;
 }
 
 /**
@@ -137,13 +131,13 @@ export function SupportHub(root) {
   const render = {
     guides: GuidesPanel({
       guides: window.WALKTHROUGHS || [],
-      onStuck: () => { panel.close(); openSupportChat(); },
+      onStuck: () => { panel.close(); openSupportRequest(); },
     }),
     docs: DocsPanel({
       docs: allDocs(),
-      onAsk: () => { panel.close(); openSupportChat(); },
+      onAsk: () => { panel.close(); openSupportRequest(); },
     }),
-    bot: BotPanel({ onOpenChat: () => { panel.close(); openSupportChat(); } }),
+    support: SupportPanel({ href: SUPPORT_MAILTO, email: SUPPORT_INTAKE }),
     community: CommunityPanel(COMMUNITY),
   };
 
@@ -201,5 +195,5 @@ export function SupportHub(root) {
     `${(window.WALKTHROUGHS || []).length} guide${(window.WALKTHROUGHS || []).length === 1 ? "" : "s"}`;
   orbit.el.appendChild(count);
 
-  return { openSupportChat, orbit };
+  return { openSupportRequest, orbit };
 }

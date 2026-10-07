@@ -1,33 +1,9 @@
 # Assistable support page
 
-The landing view is one decision, two doors, one line each:
-
-**How to do it** — follow the real screens at your own pace. Marked Beta on the card,
-because one guide is a thin library and saying so is better than letting someone conclude
-it is broken.
-
-**Something is broken in my account** — opens the chat; we go into the account directly
-and make the fix.
-
-The title is the customer's situation in their own words, and the line under it is the
-promise. That is a confidence claim: it is the right one while a human works every ticket
-and the escalation rate is near zero, so revisit it if volume ever outgrows that.
-
-Each door carries a kicker, a title in the customer's voice, and one sentence saying what
-actually happens. A version with only a title and four words under it was too bare to
-choose from; a version with a four-item facts list per door was a wall of text.
-
-The subtitles say only the thing that actually separates them: whether anyone goes into
-your account. An earlier version listed four facts per door and read as a wall of text to
-someone who is already stuck.
-
-The two icons are deliberately the same object with a different instrument on it - the
-same screen, pointed at for guides, put under a magnifier for support. That reads as one
-system rather than two unrelated pictures, and it says what each door does without a
-caption.
-
-Picking the support door opens the chat and **stays on the landing view**, so closing the
-chat leaves you where you started.
+The static support hub brings together product guides, support docs, community, and email
+support. The support panel opens a prefilled email addressed to Assistable's support
+intake. The customer sends it from their email app, and the support team can follow up by
+email.
 
 ## Type
 
@@ -42,42 +18,12 @@ the wrong one here, where the page has a handful of words and they have to do al
 work.
 
 
-## The v2 widget, as configured
+## Support intake
 
-Type `CHAT_WIDGET_V2`, id `cmt041ugd000hhz0axeybqqh2`, from the support help desk template.
-
-Settings split across two places and it matters which:
-
-**Embed attributes** (`index.html`) — things the record cannot carry. Chiefly the pre-chat
-form. On v2 the loader resolves it as `t.pre_chat?.form_first ?? e.requirePreChatForm`, so
-a `false` on the record beats the attribute; `form_first` has to be true on the record and
-the attribute is only a fallback.
-
-**Widget record** — appearance, messaging, home actions, tabs, help articles, and the rest
-of the `fields` blob. The served config at
-`api.assistable.ai/api/v1/widget-config/<id>` is the source of truth, and it lags the
-record by several minutes.
-
-Enabled deliberately:
-
-| Setting | Value | Why |
-|---|---|---|
-| pre-chat form | name + email | identity before anything is read |
-| home actions | 3 | guides, broken, billing |
-| tabs | home, messages, help | news and roadmap stay hidden; empty tabs read as neglect |
-| help articles | 2 | the tab rendered empty otherwise |
-| ai_disclaimer | set | says plainly it is an AI and a person reads the account |
-| header_subline | "Replies in a few minutes" | |
-| show_online_indicator | true | the page claims support is open |
-| persist_history | true | a returning customer keeps their thread |
-| launcher_size | lg | |
-| voice_enabled | false | text intake, no reason to ask for a mic |
-| show_tool_activity | false | raw tool chatter leaked JSON into the chat before |
-| bug-report | off | its report posts to Assistable's own channel, not our queue |
-
-Two traps: `notification_sound` is the sound name (`PING`), not a boolean, and one bad
-field rejects the whole update silently. The disclaimer and header subline only render
-after the pre-chat form is completed, so they look missing until then.
+The support panel opens the visitor's configured email app with a request addressed to the
+support intake. Its template asks for the customer's account email, affected assistant,
+what happened, expected behavior, and timing. Customers can attach relevant files in their
+email app. The page asks customers not to include passwords or API keys.
 
 ## Run it
 
@@ -122,42 +68,3 @@ no business on a customer-facing page. Only the labels changed; the screen is re
 
 The raw captures in `assets/steps/raw/` are gitignored - they are wider than the cropped
 versions and show more of the account than a public page should.
-
-## Opening the chat
-
-The "Something is broken in my account" chip opens the chat by clicking the widget's
-launcher inside its shadow root, targeted as `button[aria-label="Open chat"]`.
-
-Two traps here:
-
-- A bare `button` selector hits the teaser toast's close button when a teaser is showing,
-  which silently dismisses the toast and leaves the chat shut.
-- The widget also exposes `window.__assistableWidget.reportBug()`, which opens a polished
-  "Report a problem" form with a screenshot attached. Do not use it for this: it posts to
-  Assistable's built-in bug channel, so it never reaches the intake assistant and never
-  becomes a ticket an engineer picks up.
-
-## The embedded bot
-
-`index.html` loads the current Assistable widget:
-
-```
-https://createassistants.com/chat-widget-v2.js   data-widget-id=<widget record>
-```
-
-Not `botdisplay.com/chat-widget.js` - that is the older, separate widget and it ignores
-the v2 widget record.
-
-**Appearance is configured in the portal, not here.** The loader fetches
-`api.assistable.ai/api/v1/widget-config/<widget-id>` and that config outranks the
-`data-*` attributes (`autoOpen: config.appearance?.auto_open ?? attribute`). The
-attributes are only a fallback for when the fetch fails, so edit the widget record to
-change colour, auto-open, or the teaser copy.
-
-**That config is cached server-side and takes minutes to refresh.** A cache-busting query
-string does not help; the cache is keyed by widget id. After editing a widget, expect the
-live page to show the old appearance for a few minutes. Verified end to end on localhost:
-a message typed into the widget raised a real ticket in the queue.
-
-Before this goes on a real domain, check whether the widget enforces a hostname
-allow-list, and add the domain if so.
