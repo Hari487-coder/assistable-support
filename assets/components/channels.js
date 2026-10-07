@@ -1,8 +1,8 @@
 /**
- * The two ways in that are not a library of answers.
+ * The support and community paths that are not a library of answers.
  *
- * Both are short on purpose. A panel whose only job is to hand somebody to a
- * chat or to a community should not make them read a page first.
+ * Both are short on purpose. A panel whose job is to hand somebody to support
+ * or to a community should not make them read a page first.
  */
 
 const esc = (s) =>
@@ -10,46 +10,33 @@ const esc = (s) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
 /**
- * The debugging bot.
- *
- * The chat itself is the platform's own widget, and it stays that way. It is
- * a fixed overlay owned by another script, so lifting it into this panel would
- * mean reparenting somebody else's DOM and re-breaking it on every update of
- * theirs. It already opens over this page without leaving it, which is the
- * thing that actually matters, so this panel is the doorway and the widget is
- * the room.
- *
- * The list is here because the bot reads real accounts. What it can find
- * depends almost entirely on whether it was told which account to look in, and
- * a customer who knows that up front gets an answer in one message instead of
- * four.
+ * Human support through the Linear email intake. The customer sends a
+ * prefilled email and can continue the same ticket by replying to the receipt.
  */
-export function BotPanel({ onOpenChat }) {
+export function SupportPanel({ href, email }) {
   return function render(body) {
     body.innerHTML = `
       <div class="chan">
-        <p class="chan-lede">Describe what went wrong and the assistant opens your
-          actual account, reads the configuration, and tells you what it finds.
-          It shows the evidence before it changes anything, and it changes
-          nothing until you say yes.</p>
+        <p class="chan-lede">Email our support team. This opens a draft addressed
+          to our support intake. Send the email to submit your request; our team
+          can follow up by email.</p>
 
         <div class="chan-help">
-          <h4>It gets there faster if you include</h4>
+          <h4>Include these details so we can investigate</h4>
           <ul>
             <li>The email on your Assistable account</li>
             <li>Which assistant or sub-account it happened in</li>
-            <li>Roughly when, and what you expected instead</li>
+            <li>What happened, when, and what you expected instead</li>
           </ul>
         </div>
 
-        <button type="button" class="btn-brand chan-go" id="chanChat">
-          Tell us what happened
-        </button>
-        <p class="chan-foot">A real engineer reviews every change the assistant
-          proposes. Nothing is applied on your account without that.</p>
+        <a class="btn-brand chan-go" href="${esc(href)}">
+          Write to support
+        </a>
+        <p class="chan-foot">Your email app opens with a message template. Do not
+          include passwords, API keys, or other secrets. If no email app opens,
+          copy the intake address: <a href="mailto:${esc(email)}">${esc(email)}</a>.</p>
       </div>`;
-
-    body.querySelector("#chanChat").addEventListener("click", onOpenChat);
   };
 }
 
@@ -77,7 +64,7 @@ export function CommunityPanel({ discord, skool }) {
           <ul>
             <li>Ask in the help channel, with your account email left out</li>
             <li>Search first: most questions have been answered in there</li>
-            <li>Anything account-specific belongs in the chat, not the server</li>
+            <li>For anything account-specific, contact support by email</li>
           </ul>
         </div>
 

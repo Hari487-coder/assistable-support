@@ -141,8 +141,8 @@ export function DocsPanel({ docs, onAsk }) {
             <a href="${esc(doc.href)}" target="_blank" rel="noopener">read it on
             docs.assistable.ai</a></p>` : ""}
           <p class="doc-foot">Still stuck?
-            <button type="button" class="linkish" id="dAsk">Ask Assistable</button>
-            &mdash; the AI can check your account and tell you what is actually wrong.</p>
+            <button type="button" class="linkish" id="dAsk">Ask support</button>
+            &mdash; email our support team for follow-up.</p>
         </article>`;
       body.querySelector("#dBack").addEventListener("click", () => {
         input.value = "";
